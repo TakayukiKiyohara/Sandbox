@@ -1,0 +1,356 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\graphics">
+      <UniqueIdentifier>{c1535188-8823-4935-976e-8bd7c0b73699}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\debug">
+      <UniqueIdentifier>{04314229-1a3c-4ce7-b308-c02d10624720}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\gameObject">
+      <UniqueIdentifier>{ccc04095-1959-45da-98d0-f25e7e9c86ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\policy">
+      <UniqueIdentifier>{4ed3ddea-92df-402f-bef7-6a16d99b7a49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\math">
+      <UniqueIdentifier>{0e184712-dbc4-43c0-bb8a-5087048be174}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\util">
+      <UniqueIdentifier>{56dfb282-7afb-47fd-a48e-130bda2e0e0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\shape">
+      <UniqueIdentifier>{c696cbe9-8c0e-4bfb-afdd-a05db245cbde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics\prerender">
+      <UniqueIdentifier>{b596251c-8fcc-4636-a132-785715761d63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics\postEffect">
+      <UniqueIdentifier>{b468388b-67e6-43f5-9ba8-4d0acc9500d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Input">
+      <UniqueIdentifier>{4fc36f17-e2aa-4063-8bb9-90dfdefb2069}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\random">
+      <UniqueIdentifier>{3bbf7249-b6c7-408b-acc2-31b9e9e12440}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\particle">
+      <UniqueIdentifier>{babaf37e-c88a-4393-a0fc-86bf30d654c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AI">
+      <UniqueIdentifier>{d261529a-8bd2-4093-8d49-d7d654ac798e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\timer">
+      <UniqueIdentifier>{c6813058-4065-4fa9-b257-2e7c0c4ee19e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="tkEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tkEnginePreCompile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObject\tkGameObject.cpp">
+      <Filter>Source Files\gameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="gameObject\tkgameobjectmanager.cpp">
+      <Filter>Source Files\gameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkRenderContext.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkRenderCommandBuffer.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkVertexBuffer.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkIndexBuffer.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkCamera.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="math\tkVector.cpp">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="math\tkMatrix.cpp">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkPrimitive.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="math\tkMath.cpp">
+      <Filter>Source Files\math</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkEffect.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkEffectManager.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="shape\tkBoxShape.cpp">
+      <Filter>Source Files\shape</Filter>
+    </ClCompile>
+    <ClCompile Include="shape\tkSphereShape.cpp">
+      <Filter>Source Files\shape</Filter>
+    </ClCompile>
+    <ClCompile Include="shape\tkShapeBase.cpp">
+      <Filter>Source Files\shape</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkRenderTarget.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\preRender\tkPreRender.cpp">
+      <Filter>Source Files\graphics\prerender</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\preRender\tkIDMap.cpp">
+      <Filter>Source Files\graphics\prerender</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\postEffect\tkPostEffect.cpp">
+      <Filter>Source Files\graphics\postEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\postEffect\tkEdgeRender.cpp">
+      <Filter>Source Files\graphics\postEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\postEffect\tkBloomRender.cpp">
+      <Filter>Source Files\graphics\postEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\preRender\tkShadowMap.cpp">
+      <Filter>Source Files\graphics\prerender</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\tkKeyInput.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkSkinModel.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkSkinModelData.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkAnimation.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="random\tkRandom.cpp">
+      <Filter>Source Files\random</Filter>
+    </ClCompile>
+    <ClCompile Include="particle\tkParticleEmitter.cpp">
+      <Filter>Source Files\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="particle\tkParticle.cpp">
+      <Filter>Source Files\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="particle\tkParticleResources.cpp">
+      <Filter>Source Files\particle</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkTexture.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="AI\tkPathFinding.cpp">
+      <Filter>Source Files\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\preRender\tkShadowCaster.cpp">
+      <Filter>Source Files\graphics\prerender</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkFont.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\tkPad.cpp">
+      <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\preRender\tkReflectionMap.cpp">
+      <Filter>Source Files\graphics\prerender</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkBlur.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkMaterial.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkGaussianBlur.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\postEffect\tkDOF.cpp">
+      <Filter>Source Files\graphics\postEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\postEffect\tkFxaa.cpp">
+      <Filter>Source Files\graphics\postEffect</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="tkEnginePreCompile.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tkEngine.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="typedef.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="debug\tkAssert.h">
+      <Filter>Source Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObject\tkGameObject.h">
+      <Filter>Source Files\gameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="gameObject\tkGameObjectManager.h">
+      <Filter>Source Files\gameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="policy\tkNoncopyable.h">
+      <Filter>Source Files\policy</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkRenderCommand.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkRenderContext.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkRenderCommandBuffer.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="debug\tkLog.h">
+      <Filter>Source Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkVertexBuffer.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkIndexBuffer.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="math\tkVector.h">
+      <Filter>Source Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="math\tkMatrix.h">
+      <Filter>Source Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkCamera.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkPrimitive.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="math\tkMath.h">
+      <Filter>Source Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkEffect.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkEffectManager.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="util\tkUtil.h">
+      <Filter>Source Files\util</Filter>
+    </ClInclude>
+    <ClInclude Include="shape\tkBoxShape.h">
+      <Filter>Source Files\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="shape\tkSphereShape.h">
+      <Filter>Source Files\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="shape\tkShapeVertex.h">
+      <Filter>Source Files\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkGraphicsType.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="shape\tkShapeBase.h">
+      <Filter>Source Files\shape</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkLight.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkRenderTarget.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\preRender\tkPreRender.h">
+      <Filter>Source Files\graphics\prerender</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\preRender\tkIDMap.h">
+      <Filter>Source Files\graphics\prerender</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\postEffect\tkPostEffect.h">
+      <Filter>Source Files\graphics\postEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\postEffect\tkEdgeRender.h">
+      <Filter>Source Files\graphics\postEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\postEffect\tkBloomRender.h">
+      <Filter>Source Files\graphics\postEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\tkKeyInput.h">
+      <Filter>Source Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkSkinModelData.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkSkinModel.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkAnimation.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="random\tkRandom.h">
+      <Filter>Source Files\random</Filter>
+    </ClInclude>
+    <ClInclude Include="particle\tkParticleEmitter.h">
+      <Filter>Source Files\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="particle\tkParticle.h">
+      <Filter>Source Files\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="particle\tkParticleResources.h">
+      <Filter>Source Files\particle</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkTexture.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="AI\tkPathFinding.h">
+      <Filter>Source Files\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="timer\tkStopwatch.h">
+      <Filter>Source Files\timer</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\preRender\tkShadowCaster.h">
+      <Filter>Source Files\graphics\prerender</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkFont.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\tkPad.h">
+      <Filter>Source Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\preRender\tkReflectionMap.h">
+      <Filter>Source Files\graphics\prerender</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkBlur.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkPIXPerfTag.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkGaussianBlur.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\preRender\tkShadowMap.h">
+      <Filter>Source Files\graphics\prerender</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\postEffect\tkDOF.h">
+      <Filter>Source Files\graphics\postEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\postEffect\tkFxaa.h">
+      <Filter>Source Files\graphics\postEffect</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
