@@ -22,6 +22,8 @@ struct SLight{
 	float4  diffuseLightColor[NUM_DIFFUSE_LIGHT];	//ディフューズライトのカラー。
 	float3	limLightDir;							//リムライトの方向。
 	float4	limLightColor;							//リムライトの色。
+	float4  pointLightPosition;						//ポイントライトの座標。
+	float4  pointLightColor;						//ポイントライトのカラー。
 	float3  ambient;								//アンビエントライト。
 };
 SLight	g_light;		//!<ライト
@@ -44,13 +46,13 @@ float4 DiffuseLight( float3 normal )
 /*!
  *@brief	リムライトを計算。
  */
-float3 CalcLimLight( float3 normal)
+float3 CalcLimLight( float3 normal, float3 lightDir, float3 limColor)
 {
 	float lim = 0.0f;
 	float baselim = 1.0f - abs( dot(normal, g_cameraDir ) );
-	lim += baselim * max( 0.0f, -dot(g_cameraDir, g_light.limLightDir));
+	lim += baselim * max( 0.0f, -dot(g_cameraDir, lightDir));
 	lim = pow(lim, 1.5f);
-	return g_light.limLightColor.xyz * lim;
+	return limColor * lim;
 }
 /*!
  *@brief	スペキュラライトを計算。
@@ -68,6 +70,23 @@ float3 SpecLight(float3 normal, float3 worldPos, float2 uv)
 		spec += g_light.diffuseLightColor[i] * pow(max(0.0f, dot(L,R)), 2 ) * g_light.diffuseLightColor[i].w;	//スペキュラ強度。
 	}
 	return spec * specPow;
+}
+/*!
+ * @brief	ポイントライトを計算。
+ */
+float3 PointLight( float3 normal, float3 worldPos, int lim )
+{
+	float3 lightDir = worldPos - g_light.pointLightPosition.xyz;
+	float len = length(lightDir);
+	lightDir = normalize(lightDir);
+	float3 color = max( 0.0f, -dot(normal, lightDir)) * g_light.pointLightColor.xyz;
+	//距離に反比例して減衰
+	color /= max(1.0f, (len*len)/g_light.pointLightColor.w);
+	if(lim){
+		//ポイントライトでリムライトも計算する。
+		color += CalcLimLight(normal, lightDir, g_light.pointLightColor.xyz);
+	}
+	return color;
 }
 /*!
  * @brief	アルファに埋め込む輝度を計算。

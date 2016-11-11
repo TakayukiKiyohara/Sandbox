@@ -7,12 +7,18 @@
 #include "tkEngine/graphics/tkEffect.h"
 
 namespace tkEngine{
+	namespace {
+		int weights_tbl[] = {
+			2,4,6,8
+		};
+	}
 	CGaussianBlur::CGaussianBlur() :
 		m_srcTexture(nullptr),
 		m_effect(nullptr),
-		m_blurPower(1.0f)
+		m_blurPower(1.0f),
+		m_useWeights(enUseWeight_8)
 	{
-
+		memset(m_weights, 0, sizeof(m_weights));
 	}
 	CGaussianBlur::~CGaussianBlur()
 	{
@@ -21,12 +27,17 @@ namespace tkEngine{
 	void CGaussianBlur::UpdateWeight(float dispersion)
 	{
 		float total = 0;
-		for (int i = 0; i<NUM_WEIGHTS; i++) {
+		for (int i = 0; i<weights_tbl[m_useWeights]; i++) {
 			m_weights[i] = expf(-0.5f*(float)(i*i) / dispersion);
-			total += 2.0f*m_weights[i];
+			if (i == 0) {
+				total += m_weights[i];
+			}
+			else {
+				total += 2.0f*m_weights[i];
+			}
 		}
 		// ‹KŠi‰»
-		for (int i = 0; i < NUM_WEIGHTS; i++) {
+		for (int i = 0; i < weights_tbl[m_useWeights]; i++) {
 			m_weights[i] /= total;
 		}
 	}
@@ -39,9 +50,10 @@ namespace tkEngine{
 		m_srcTexWH[0] = w;
 		m_srcTexWH[1] = h;
 		int size[2][2]{
-			{w >> 1, h},
-			{ w >> 1, h >> 1},
+			{ w, h },
+			{ w, h },
 		};
+		
 		for (int i = 0; i < 2; i++) {
 			m_rt[i].Create(size[i][0], size[i][1], 1, (EFormat)desc.Format, FMT_INVALID, MULTISAMPLE_NONE, 0);
 		}
@@ -96,15 +108,19 @@ namespace tkEngine{
 				16.0f / s_cast<float>(m_srcTexWH[0]),
 				0.0f
 			};
-			
-			m_effect->SetTechnique(renderContext, "TransformedPrimGBlurX");
+			const char* tecNameTbl[] = {
+				"TransformedPrimGBlurX_2",
+				"TransformedPrimGBlurX_4",
+				"TransformedPrimGBlurX_6",
+				"TransformedPrimGBlurX_8"
+			};
+			m_effect->SetTechnique(renderContext, tecNameTbl[m_useWeights]);
 			m_effect->Begin(renderContext);
 			m_effect->BeginPass(renderContext, 0);
 			m_effect->SetTexture(renderContext, "g_tex", m_srcTexture);
 			m_effect->SetValue(renderContext, "g_texSize", size, sizeof(size));
-			m_effect->SetValue(renderContext, "g_offset", offset, sizeof(size));
+			m_effect->SetValue(renderContext, "g_offset", offset, sizeof(offset));
 			m_effect->SetValue(renderContext, "g_weight", m_weights, sizeof(m_weights));
-				
 			m_effect->CommitChanges(renderContext);
 			renderContext.SetVertexDeclaration(m_prim.GetVertexDecl());
 			renderContext.SetStreamSource(0, m_prim.GetVertexBuffer());
@@ -128,12 +144,18 @@ namespace tkEngine{
 					16.0f / s_cast<float>(m_rt[0].GetHeight()),
 				};
 				
-			m_effect->SetTechnique(renderContext, "TransformedPrimGBlurY");
+			const char* tecNameTbl[] = {
+				"TransformedPrimGBlurY_2",
+				"TransformedPrimGBlurY_4",
+				"TransformedPrimGBlurY_6",
+				"TransformedPrimGBlurY_8"
+			};
+			m_effect->SetTechnique(renderContext, tecNameTbl[m_useWeights]);
 			m_effect->Begin(renderContext);
 			m_effect->BeginPass(renderContext, 0);
 			m_effect->SetTexture(renderContext, "g_tex", m_rt[0].GetTexture());
 			m_effect->SetValue(renderContext, "g_texSize", size, sizeof(size));
-			m_effect->SetValue(renderContext, "g_offset", offset, sizeof(size));
+			m_effect->SetValue(renderContext, "g_offset", offset, sizeof(offset));
 			m_effect->SetValue(renderContext, "g_weight", m_weights, sizeof(m_weights));
 			
 			m_effect->CommitChanges(renderContext);

@@ -21,7 +21,7 @@ namespace tkEngine{
 		CPrimitive		primitive;					//!<プリミティブ。
 		CTexture*		texture;					//!<テクスチャ。
 		CEffect*		shaderEffect;				//!<シェーダーエフェクト。
-		CCamera*		camera;						//!<カメラ。
+		const CCamera*	camera;						//!<カメラ。
 		CRandom*		random;						//!<乱数。
 		float			life;						//!<ライフ。
 		float			timer;						//!<タイマー。
@@ -41,11 +41,11 @@ namespace tkEngine{
 		CVector3		applyForce;					//!<外部から加わる力。
 		float			brightness;					//!<輝度。ブルームが有効になっているとこれを強くすると光が溢れます。
 		int				alphaBlendMode;				//!<0半透明合成、1加算合成。
-		
+		CVector3		mulColor;					//!<乗算カラー。
 	public:
 		CParticle();
 		~CParticle();
-		void Init(CRandom& random, CCamera& camera, const SParicleEmitParameter& param, const CVector3& emitPosition);
+		void Init(CRandom& random, const CCamera& camera, const SParicleEmitParameter& param, const CVector3& emitPosition);
 		void Start() override ;
 		void Update() override;
 		void Render( CRenderContext& renderContext ) override;

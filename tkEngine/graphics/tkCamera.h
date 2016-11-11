@@ -13,7 +13,7 @@ namespace tkEngine{
 		/*!
 		 * @brief	ビュー行列、プロジェクション行列、ビュープロジェクション行列を更新。
 		 */
-		void Update();
+		virtual void Update();
 		/*!
 		 * @brief	カメラの座標を設定。
 		 *@param[in]	pos		カメラの座標。
@@ -137,7 +137,7 @@ namespace tkEngine{
 		{
 			return m_viewAngle;
 		}
-	private:
+	protected:
 		CVector3	m_position;							//!<カメラ位置。
 		CVector3	m_up;								//!<カメラの上方向。
 		CVector3	m_target;							//!<カメラの中止点。

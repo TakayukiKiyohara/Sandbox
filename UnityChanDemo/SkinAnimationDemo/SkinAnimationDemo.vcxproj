@@ -72,28 +72,27 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-    <IncludePath>$(SolutionDir)../;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)../;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(SolutionDir)../tkEngine/bulletPhysics/src;$(SolutionDir)/SkinAnimationDemo;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(SolutionDir)/Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)../;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)../;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(SolutionDir)../tkEngine/bulletPhysics/src;$(SolutionDir)/SkinAnimationDemo;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)/x64/Debug;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)../;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)../;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(SolutionDir)../tkEngine/bulletPhysics/src;$(SolutionDir)/SkinAnimationDemo;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)/Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)../;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(IncludePath)</IncludePath>
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)../;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(SolutionDir)../tkEngine/bulletPhysics/src;$(SolutionDir)/SkinAnimationDemo;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)/x64/Release;C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
@@ -103,84 +102,129 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>tkEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tkEngine.lib;X3daudio.lib;%(AdditionalDependencies);BulletCollision_Debug.lib;BulletDynamics_Debug.lib;BulletSoftBody_Debug.lib;LinearMath_Debug.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>tkEngine.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tkEngine.lib;X3daudio.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);BulletCollision_Debug.lib;BulletDynamics_Debug.lib;BulletSoftBody_Debug.lib;LinearMath_Debug.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>tkEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tkEngine.lib;X3daudio.lib;%(AdditionalDependencies);LinearMath.lib;BulletSoftBody.lib;BulletDynamics.lib;BulletCollision.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>tkEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tkEngine.lib;X3daudio.lib;%(AdditionalDependencies);LinearMath.lib;BulletSoftBody.lib;BulletDynamics.lib;BulletCollision.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationEventController.cpp" />
     <ClCompile Include="Car.cpp" />
+    <ClCompile Include="DamageCollisionWorld.cpp" />
+    <ClCompile Include="EnemyTest.cpp" />
+    <ClCompile Include="Enemy\Enemy.cpp" />
+    <ClCompile Include="Enemy\EnemyManager.cpp" />
+    <ClCompile Include="Enemy\EnemySensor.cpp" />
+    <ClCompile Include="Enemy\Enemy_00.cpp" />
+    <ClCompile Include="Enemy\HFSM\EnemyStateAttack.cpp" />
+    <ClCompile Include="Enemy\HFSM\EnemyStateDamage.cpp" />
+    <ClCompile Include="Enemy\HFSM\EnemyStateDeath.cpp" />
+    <ClCompile Include="Enemy\HFSM\EnemyStateFind.cpp" />
+    <ClCompile Include="Enemy\HFSM\EnemyStateIdle.cpp" />
+    <ClCompile Include="Enemy\HFSM\EnemyStateRun.cpp" />
+    <ClCompile Include="Enemy\HFSM\EnemyStateSearch.cpp" />
+    <ClCompile Include="Enemy\HFSM\EnemyStateWalk.cpp" />
     <ClCompile Include="GameCamera.cpp" />
-    <ClCompile Include="Ground.cpp" />
+    <ClCompile Include="HUD\PlayerHPBar.cpp" />
+    <ClCompile Include="HUD\PlayerMPBar.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Map.cpp" />
-    <ClCompile Include="MapChip.cpp" />
-    <ClCompile Include="Sky.cpp" />
-    <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="UnityChan.cpp" />
+    <ClCompile Include="Map\Ground.cpp" />
+    <ClCompile Include="Map\Map.cpp" />
+    <ClCompile Include="Map\MapChip.cpp" />
+    <ClCompile Include="Map\Sky.cpp" />
+    <ClCompile Include="Player\Player.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="UnityChanInstance.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationEventController.h" />
+    <ClInclude Include="AnimationEventMacro.h" />
     <ClInclude Include="Car.h" />
+    <ClInclude Include="DamageCollisionWorld.h" />
+    <ClInclude Include="EnemyTest.h" />
+    <ClInclude Include="Enemy\Enemy.h" />
+    <ClInclude Include="Enemy\EnemyAnimationEventTbl.h" />
+    <ClInclude Include="Enemy\EnemyManager.h" />
+    <ClInclude Include="Enemy\EnemyParameter.h" />
+    <ClInclude Include="Enemy\EnemySensor.h" />
+    <ClInclude Include="Enemy\Enemy_00.h" />
+    <ClInclude Include="Enemy\HFSM\EnemyStateAttack.h" />
+    <ClInclude Include="Enemy\HFSM\EnemyStateDamage.h" />
+    <ClInclude Include="Enemy\HFSM\EnemyStateDeath.h" />
+    <ClInclude Include="Enemy\HFSM\EnemyStateFind.h" />
+    <ClInclude Include="Enemy\HFSM\EnemyStateIdle.h" />
+    <ClInclude Include="Enemy\HFSM\EnemyStateRun.h" />
+    <ClInclude Include="Enemy\HFSM\EnemyStateSearch.h" />
+    <ClInclude Include="Enemy\HFSM\EnemyStateWalk.h" />
+    <ClInclude Include="Enemy\HFSM\IEnemyState.h" />
     <ClInclude Include="GameCamera.h" />
-    <ClInclude Include="Ground.h" />
-    <ClInclude Include="Map.h" />
-    <ClInclude Include="MapChip.h" />
-    <ClInclude Include="Sky.h" />
+    <ClInclude Include="HUD\PlayerHPBar.h" />
+    <ClInclude Include="HUD\PlayerMPBar.h" />
+    <ClInclude Include="Map\Ground.h" />
+    <ClInclude Include="Map\Map.h" />
+    <ClInclude Include="Map\MapChip.h" />
+    <ClInclude Include="Map\Sky.h" />
+    <ClInclude Include="Player\Player.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="UnityChan.h" />
     <ClInclude Include="UnityChanInstance.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

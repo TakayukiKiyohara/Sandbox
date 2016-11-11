@@ -92,6 +92,24 @@ namespace tkEngine{
 					m_press[vPadToXPad.vButton] = 0;
 				}
 			}
+			//左トリガー。
+			if (m_state.state.Gamepad.bLeftTrigger != 0) {
+				m_trigger[enButtonLB2] = 1 ^ m_press[enButtonLB2];
+				m_press[enButtonLB2] = 1;
+			}
+			else {
+				m_trigger[enButtonLB2] = 0;
+				m_press[enButtonLB2] = 0;
+			}
+			//右トリガー
+			if (m_state.state.Gamepad.bRightTrigger != 0) {
+				m_trigger[enButtonRB2] = 1 ^ m_press[enButtonRB2];
+				m_press[enButtonRB2] = 1;
+			}
+			else {
+				m_trigger[enButtonRB2] = 0;
+				m_press[enButtonRB2] = 0;
+			}
 			if ((m_state.state.Gamepad.sThumbLX < INPUT_DEADZONE &&
 				m_state.state.Gamepad.sThumbLX > -INPUT_DEADZONE) &&
 				(m_state.state.Gamepad.sThumbLY < INPUT_DEADZONE &&

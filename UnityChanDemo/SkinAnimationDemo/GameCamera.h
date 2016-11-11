@@ -4,7 +4,9 @@
 
 #pragma once
 
-class UnityChan;
+#include "tkEngine/camera/tkSpringCamera.h"
+
+class Player;
 class Car;
 /*!
  *@brief	ゲームカメラ。
@@ -16,9 +18,9 @@ public:
 	void Start() override ;
 	void Update() override ;
 	void Render( CRenderContext& renderContext ) override;
-	void SetUnityChan(UnityChan* unityChan)
+	void SetPlayer(Player* player)
 	{
-		this->unityChan = unityChan;
+		this->player = player;
 	}
 	void SetCar(Car* car)
 	{
@@ -26,13 +28,23 @@ public:
 	}
 	const CCamera& GetCamera() const
 	{
-		return camera;
+		return *springCamera.GetCamera();
+	}
+	void SetDampingRate(float rate)
+	{
+		springCamera.SetDampingRate(rate);
+	}
+	void SetViewAngle(float angle)
+	{
+		m_targetViewAngle = angle;
 	}
 private:
-	CCamera camera;
+	//CCamera camera;
+	CSpringCamera springCamera;
 	Car* car;
-	UnityChan*	unityChan;
+	Player*	player;
 	CVector3	toPosition;		//注視点から視点へのベクトル。
+	float m_targetViewAngle;	//ビューアングル。
 };
 
 

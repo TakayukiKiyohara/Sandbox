@@ -27,8 +27,11 @@ namespace tkEngine{
 			LPDIRECT3DTEXTURE9 texDx;
 			HRESULT hr = D3DXCreateTextureFromFileA(Engine().GetD3DDevice(), filePath, &texDx);
 			if (FAILED(hr)) {
-				MessageBox(nullptr, "failed texture", "error", MB_OK);
-				TK_ASSERT(SUCCEEDED(hr), "error");
+				//エラー用のテクスチャを表示。
+				hr = D3DXCreateTextureFromFileA(Engine().GetD3DDevice(), "Assets/effect/error.png", &texDx);
+				if (FAILED(hr)) {
+					return nullptr;
+				}
 			}
 			tex = new CTexture;
 			tex->SetTextureDX(texDx);

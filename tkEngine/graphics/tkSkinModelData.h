@@ -6,6 +6,7 @@
 
 
 namespace tkEngine{
+	class CSkinModelMaterial;
 	struct D3DXFRAME_DERIVED : public D3DXFRAME {
 		D3DXMATRIX	CombinedTransformationMatrix;	//合成済み行列。
 	};
@@ -20,6 +21,8 @@ namespace tkEngine{
 		D3DXMATRIX* pBoneOffsetMatrices;
 		DWORD NumPaletteEntries;
 		DWORD iAttributeSW;
+		CSkinModelMaterial* materials;
+		CTexture* textures;
 	};
 	class CAnimation;
 	/*!
@@ -116,6 +119,7 @@ namespace tkEngine{
 		* @brief	先頭のメッシュを取得。
 		*/
 		LPD3DXMESH GetOrgMeshFirst() const;
+		
 		/*!
 		* @brief	骨のワールド行列を検索
 		*@details
@@ -124,17 +128,45 @@ namespace tkEngine{
 		*@return 見つかったら骨のワールド行列のアドレスを返す。見つからなかった場合はNULLを返す。
 		*/
 		CMatrix* FindBoneWorldMatrix(const char* boneName);
-	private:
 		/*!
-		* @brief	骨のワールド行列を検索。
-		*@param[in]	nameKey	名前キー
-		*@return 見つかったら骨のワールド行列のアドレスを返す。見つからなかった場合はNULLを返す。
+		* @brief	マテリアルを検索。
+		*@details
+		* 名前で検索を行っているため、遅いです。頻繁に呼ばないように。
+		*@param[in]	matName	マテリアル名。ディフューズテクスチャ名がマテリアル名になります。
 		*/
+		CSkinModelMaterial* FindMaterial(const char* matName);
+		/*!
+		* @brief	ルートのボーンを取得。
+		*/
+		CMatrix* GetRootBoneWorldMatrix()
+		{
+			TK_ASSERT(m_frameRoot != nullptr, "m_frameRoot is null");
+			D3DXFRAME_DERIVED* frameDer = (D3DXFRAME_DERIVED*)m_frameRoot;
+			return (CMatrix*)&frameDer->CombinedTransformationMatrix;
+		}
+		/*!
+		* @brief	スキンモデルマテリアルを追加。
+		*@details
+		* tkEngineの中でだけ使用されます。外部から使用しないようにしてください。
+		*/
+		void AddSkinModelMaterial(CSkinModelMaterial* mat)
+		{
+			m_materials.push_back(mat);
+		}
+		/*!
+		* @brief	スキンモデルマテリアルのリストを取得。
+		*/
+		const std::vector<CSkinModelMaterial*>& GetSkinModelMaterials() const
+		{
+			return m_materials;
+		}
+	private:
 		CMatrix* FindBoneWorldMatrix(const char* boneName, LPD3DXFRAME frame);
 		/*!
-		* @brief	先頭のメッシュを取得。
+		* @brief	オリジナルメッシュを取得。
 		*/
-		LPD3DXMESH GetOrgMeshFirst(LPD3DXFRAME frame) const;
+		LPD3DXMESH GetOrgMesh(LPD3DXFRAME frame) const;
+		
 		/*!
 		* @brief	オリジナルのスケルトンを削除。
 		*@param[in]	frame	スケルトン。
@@ -163,13 +195,14 @@ namespace tkEngine{
 		bool CreateInstancingDrawData(LPD3DXFRAME frame, int numInstance, SVertexElement* vertexElement );
 		HRESULT SetupBoneMatrixPointers(LPD3DXFRAME pFrame, LPD3DXFRAME pRootFrame);
 	private:
-		LPD3DXFRAME						m_frameRoot;		//フレームルート。
-		ID3DXAnimationController*		m_animController;	//アニメーションコントローラ。
-		bool							m_isClone;			//クローン？
-		CVertexBuffer			 		m_instanceVertexBuffer;			//インスタンシング描画用の頂点バッファのリスト。
-		IDirect3DVertexDeclaration9*	m_vertexDeclForInstancingDraw;	//インスタンシング描画を行う時の頂点定義。
-		int								m_numInstance;					//インスタンスの数。
-		int								m_vertexBufferStride;			//頂点バッファのストライド。
+		LPD3DXFRAME							m_frameRoot;		//フレームルート。
+		ID3DXAnimationController*			m_animController;	//アニメーションコントローラ。
+		bool								m_isClone;			//クローン？
+		CVertexBuffer			 			m_instanceVertexBuffer;			//インスタンシング描画用の頂点バッファのリスト。
+		IDirect3DVertexDeclaration9*		m_vertexDeclForInstancingDraw;	//インスタンシング描画を行う時の頂点定義。
+		int									m_numInstance;					//インスタンスの数。
+		int									m_vertexBufferStride;			//頂点バッファのストライド。
+		std::vector<CSkinModelMaterial*>	m_materials;					//マテリアル。
 	};
 }
 

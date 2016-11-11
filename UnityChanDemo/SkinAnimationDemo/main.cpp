@@ -1,17 +1,98 @@
 #include "stdafx.h"
 
-#include "UnityChan.h"
+#include "Player/Player.h"
 #include "UnityChanInstance.h"
 #include "Car.h"
-#include "Map.h"
-#include "Sky.h"
-#include "Ground.h"
+#include "Map/Map.h"
+#include "Map/Sky.h"
+#include "Map/Ground.h"
+#include "tkEngine/Physics/tkPhysics.h"
+#include "EnemyTest.h"
+#include "Enemy/EnemyManager.h"
+#include <time.h>
+#include "DamageCollisionWorld.h"
+#include "tkEngine/Sound/tkSoundSource.h"
+#include "tkEngine/graphics/sprite/tkSprite.h"
+#include "HUD/PlayerHPBar.h"
+#include "HUD/PlayerMPBar.h"
 
+CPhysicsWorld* g_physicsWorld = NULL;
+Player* g_player = NULL;
+CRandom g_random;
+DamageCollisionWorld* g_damageCollisionWorld = NULL;
 //#define MEMORY_LEAK_TEST		//定義でメモリリークテストが有効になる。
+#define PLAY_WAVE_FILE_TEST		//定義で波形データの再生テストが有効になる。
+//#define DRAW_SPRITE_TEST		//定義でスプライト描画テスト。
 
+#ifdef DRAW_SPRITE_TEST
+class DrawSpriteTest : public IGameObject {
+	CSprite	sprite;
+	CTexture texture;
+public:
+	DrawSpriteTest()
+	{
+	}
+	~DrawSpriteTest()
+	{
+	}
+	void Start() override
+	{
+		texture.Load("Assets/sprite/test.png");
+		sprite.Init(&texture);
+		sprite.SetPosition({ -640, 360 });
+		sprite.SetPivot({ 0.0f, 1.0f });
+	}
+	void Update() override
+	{
+	}
+	void PostRender( CRenderContext& renderContext ) override
+	{
+		sprite.Draw(renderContext);
+	}
+};
+#endif
+#ifdef PLAY_WAVE_FILE_TEST
+class PlayWaveFileTest : public IGameObject {
+	/*CWaveFile waveFile;
+	char* buffer;*/
+	CSoundSource soundSource;
+public:
+	PlayWaveFileTest() 
+	{
+	}
+	~PlayWaveFileTest()
+	{
+	}
+	void Start() override
+	{
+		//サウンドソースを初期化。
+		soundSource.InitStreaming("Assets/sound/wind.wav");
+		//soundSource.Init("Assets/sound/MusicMono.wav");
+		soundSource.Play(true);
+		soundSource.SetVolume(0.5f);
+		AddGO(0, &soundSource);
+	}
+	void Update() override
+	{
+		/*if (Pad(0).IsPress(enButtonDown)) {
+			CSoundSource* s = NewGO<CSoundSource>(0);
+			s->Init("Assets/sound/EnemyAttack.wav", true);
+			s->Play(false);
+			s->SetPosition(g_player->GetPosition());
+			s = NewGO<CSoundSource>(0);
+			s->Init("Assets/sound/Damage_00.wav");
+			s->Play(false);
+		}*/
+	}
+	void Render(CRenderContext& renderContext) override
+	{
+	}
+};
+#endif
 #ifdef MEMORY_LEAK_TEST
 //メモリリークテスト。
 class MemoryLeakTest : public IGameObject {
+	
 public:
 	MemoryLeakTest()
 	{
@@ -24,27 +105,24 @@ public:
 	void Update() override
 	{
 		//スキンなしモデル。
-		CSkinModelData	nonSkinModelData;		//スキンモデルデータ。
-		nonSkinModelData.LoadModelData("Assets/modelData/Court.X", NULL);
+		CSkinModelDataHandle nonSkinModelData;		//スキンモデルデータ。
+		SkinModelDataResources().Load(nonSkinModelData, "Assets/modelData/ground.X", NULL);
+		
 		//スキンなしインスタンシングモデル。
-		CSkinModelData nonSkinModelInstancing;
-		nonSkinModelInstancing.LoadModelData("Assets/modelData/Court.X", NULL);
-		//インスタンス描画用のデータを作成。
-		tkEngine::SVertexElement vertexElement[] = {
-			{ 1,  0, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1 },  // WORLD 1行目
-			{ 1, 16, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 2 },  // WORLD 2行目
-			{ 1, 32, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 3 },  // WORLD 3行目
-			{ 1, 48, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 4 },  // WORLD 4行目
-			D3DDECL_END()
-		};
-		nonSkinModelInstancing.CreateInstancingDrawData(10, vertexElement);
+		CSkinModelDataHandle nonSkinModelInstancing;
+		SkinModelDataResources().Load(nonSkinModelInstancing, "Assets/modelData/ground.X", NULL, true, 10);
+		
 		//スキンありモデル。
-		CSkinModelData skinModelData;
-		skinModelData.LoadModelData("Assets/modelData/Unity.X", NULL);
+		CSkinModelDataHandle skinModelData;
+		SkinModelDataResources().Load(skinModelData, "Assets/modelData/Unity.X", NULL);
 		//スキンありインスタンシングモデル。
-		CSkinModelData skinModelInstancing;
-		skinModelInstancing.LoadModelData("Assets/modelData/Unity.X", NULL);
-		skinModelInstancing.CreateInstancingDrawData(10, vertexElement);
+		CSkinModelDataHandle skinModelInstancing;
+		SkinModelDataResources().Load(skinModelInstancing, "Assets/modelData/Unity.X", NULL, true, 10);
+
+		CSoundSource soundSource;
+		soundSource.InitStreaming("Assets/sound/SoundTest.wav");
+		//soundSource.Init("Assets/sound/MusicMono.wav");
+		soundSource.Play(true);
 
 	}
 	void Render(CRenderContext& renderContext) override
@@ -74,14 +152,18 @@ void InitTkEngine( HINSTANCE hInst )
 	initParam.screenWidth = 1280;
 	initParam.frameBufferHeight = 720;
 	initParam.frameBufferWidth = 1280;
+	//Bloom
 	initParam.graphicsConfig.bloomConfig.isEnable = true;
 	initParam.graphicsConfig.edgeRenderConfig.isEnable = false;
 	initParam.graphicsConfig.edgeRenderConfig.idMapWidth = initParam.frameBufferWidth;
 	initParam.graphicsConfig.edgeRenderConfig.idMapHeight = initParam.frameBufferHeight;
 	//Shadow
+	initParam.graphicsConfig.shadowRenderConfig.Init();
 	initParam.graphicsConfig.shadowRenderConfig.isEnable = true;
-	initParam.graphicsConfig.shadowRenderConfig.shadowMapWidth = 2048;
-	initParam.graphicsConfig.shadowRenderConfig.shadowMapHeight = 2048;
+	initParam.graphicsConfig.shadowRenderConfig.shadowMapWidth = 1024;
+	initParam.graphicsConfig.shadowRenderConfig.shadowMapHeight = 1024;
+	initParam.graphicsConfig.shadowRenderConfig.numShadowMap = 3;
+	
 	//reflection
 	initParam.graphicsConfig.reflectionMapConfig.isEnable = false;
 	initParam.graphicsConfig.reflectionMapConfig.reflectionMapWidth = 512;
@@ -90,6 +172,8 @@ void InitTkEngine( HINSTANCE hInst )
 	initParam.graphicsConfig.dofConfig.isEnable = true;
 	//AA
 	initParam.graphicsConfig.aaConfig.isEnable = true;
+	//MotionBlur
+	initParam.graphicsConfig.motionBlurConfig.isEnable = true;
 
 	Engine().Init(initParam);	//初期化。
 	
@@ -107,24 +191,35 @@ int WINAPI wWinMain(
 {
 	//tkEngineの初期化。
 	InitTkEngine( hInst );
-	
+	g_random.Init((unsigned long)time(NULL));
+#ifdef DRAW_SPRITE_TEST
+	NewGO<DrawSpriteTest>(1);
+#endif
+#ifdef PLAY_WAVE_FILE_TEST
+	NewGO<PlayWaveFileTest>(0);
+#endif
 #ifdef MEMORY_LEAK_TEST
 	NewGO<MemoryLeakTest>(0);
 #else
-	
+
+	g_player = NewGO<Player>(0);
 	NewGO<UnityChanInstance>(0);
+	NewGO<EnemyManager>(0);
 	NewGO<Map>(0);
 	NewGO<Ground>(0);
+	NewGO<PlayerHPBar>(0);
+	NewGO<PlayerMPBar>(0);
+	g_damageCollisionWorld = NewGO<DamageCollisionWorld>(0);
+
 	Sky* sky = NewGO<Sky>(0);
-	UnityChan* unityChan = NewGO<UnityChan>(0);
-	sky->SetUnityChan(unityChan);
+	sky->SetPlayer(g_player);
 	g_car = NewGO<Car>(0);
 	g_camera = NewGO<GameCamera>(0);
-	unityChan->SetPosition(CVector3(0.0f, 1.5f, 0.0f));
-	g_camera->SetUnityChan(unityChan);
+	g_player->SetPosition(CVector3(-10.0f, 4.5f, 0.0f));
+	g_camera->SetPlayer(g_player);
+	MotionBlur().SetCamera(&g_camera->GetCamera());
 #endif
 	Engine().RunGameLoop();		//ゲームループを実行。
-	//地面との当たり判定のテスト。
 
 	return 0;
 }

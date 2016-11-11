@@ -12,6 +12,8 @@ sampler_state
     MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
+    AddressU = CLAMP;
+    AddressV = CLAMP;
 };
 
 texture g_depthTexture;	//深度テクスチャ。
@@ -55,9 +57,6 @@ struct VS_INPUT{
 struct VS_OUTPUT{
 	float4 pos 	: POSITION;
 	float2 tex0 : TEXCOORD0;
-	float2 tex1 : TEXCOORD1;
-	float2 tex2 : TEXCOORD2;
-	float2 tex3 : TEXCOORD3;
 };
 /*!
  * @brief	頂点シェーダ。
@@ -70,9 +69,6 @@ VS_OUTPUT VSMain( VS_INPUT In )
 	
 	tex.y = 1.0f - tex.y;
 	Out.tex0 = tex + float2( 0.5/g_sceneTexSize.x, 0.5/g_sceneTexSize.y);
-	Out.tex1 = Out.tex0 + float2( 0.5/g_sceneTexSize.x, 0.5/g_sceneTexSize.y);
-	Out.tex2 = Out.tex0 + float2( -0.5/g_sceneTexSize.x, 0.5/g_sceneTexSize.y);
-	Out.tex3 = Out.tex0 + float2( 0.0f, -0.5/g_sceneTexSize.y);
 	return Out;
 }
 
@@ -83,7 +79,6 @@ float4 PSMain(VS_OUTPUT In ) : COLOR
 {
 	float4 sceneColor = tex2D(g_SceneSampler, In.tex0);
 	float4 depth = tex2D(g_depthSampler, In.tex0);
-	
 	//手前ボケ
 	float t = depth - g_dofParam.z;
 	float forwardRate = max( 0.0f, -g_dofParam.x - t );
@@ -95,23 +90,14 @@ float4 PSMain(VS_OUTPUT In ) : COLOR
 		//奥ボケ
 		t *= g_dofParam.x / (g_dofParam.y);
 		t = min(1.0f, t);
-		float4 blur0 = tex2D(g_blurBackSampler, In.tex1);
-		float4 blur1 = tex2D(g_blurBackSampler, In.tex2);
-		float4 blur2 = tex2D(g_blurBackSampler, In.tex3);
-		color += lerp(sceneColor, blur0, t);
-		color += lerp(sceneColor, blur1, t);
-		color += lerp(sceneColor, blur2, t);
-		color /= 3.0f;
+		float4 blur = tex2D(g_blurBackSampler, In.tex0);
+		color = lerp(sceneColor, blur, t);
+
 	}else{
 		//手前ボケ
 		t = min(1.0f, t * 2.0f);
-		float4 blur0 = tex2D(g_blurBackSampler, In.tex1);
-		float4 blur1 = tex2D(g_blurBackSampler, In.tex2);
-		float4 blur2 = tex2D(g_blurBackSampler, In.tex3);
-		color += lerp(sceneColor, blur0, t);
-		color += lerp(sceneColor, blur1, t);
-		color += lerp(sceneColor, blur2, t);
-		color /= 3.0f;
+		float4 blur = tex2D(g_blurForwardSampler, In.tex0);
+		color = lerp(sceneColor, blur, t);
 	}
 	
 	return color;

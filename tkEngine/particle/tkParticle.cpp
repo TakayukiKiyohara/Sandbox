@@ -19,7 +19,7 @@ namespace tkEngine{
 	{
 		primitive.Release();
 	}
-	void CParticle::Init(CRandom& random, CCamera& camera, const SParicleEmitParameter& param, const CVector3& emitPosition )
+	void CParticle::Init(CRandom& random, const CCamera& camera, const SParicleEmitParameter& param, const CVector3& emitPosition )
 	{
 		float halfW = param.w * 0.5f;
 		float halfH = param.h * 0.5f;
@@ -90,6 +90,7 @@ namespace tkEngine{
 		isBillboard = param.isBillboard;
 		brightness = param.brightness;
 		alphaBlendMode = param.alphaBlendMode;
+		mulColor = param.mulColor;
 		rotateZ = CMath::PI * 2.0f * (float)random.GetRandDouble();
 	}
 	void CParticle::Start()
@@ -170,21 +171,22 @@ namespace tkEngine{
 		case 1:
 			renderContext.SetRenderState(RS_SRCBLEND, BLEND_ONE);
 			renderContext.SetRenderState(RS_DESTBLEND, BLEND_ONE);
-			renderContext.SetRenderState(RS_SEPARATEALPHABLENDENABL, TRUE);	//αはソースを書きこむ。
-			renderContext.SetRenderState(RS_SRCBLENDALPHA, BLEND_ONE);
-			renderContext.SetRenderState(RS_DESTBLENDALPHA, BLEND_ZERO);
 			shaderEffect->SetTechnique(renderContext, "ColorTexPrimAdd");
 			break;
 		}
 		
 		shaderEffect->Begin(renderContext);
 		shaderEffect->BeginPass(renderContext, 0);
-		renderContext.SetRenderState(RS_ZENABLE, FALSE);
+		renderContext.SetRenderState(RS_ZENABLE, TRUE);
+		renderContext.SetRenderState(RS_ZWRITEENABLE, FALSE);
 
 		shaderEffect->SetValue(renderContext, "g_mWVP", &m, sizeof(CMatrix));
 		shaderEffect->SetValue(renderContext, "g_alpha", &alpha, sizeof(alpha));
 		shaderEffect->SetValue(renderContext, "g_brightness", &brightness, sizeof(brightness));
-		shaderEffect->SetTexture(renderContext, "g_texture", texture);
+		if (texture) {
+			shaderEffect->SetTexture(renderContext, "g_texture", texture);
+		}
+		shaderEffect->SetValue(renderContext, "g_mulColor", &mulColor, sizeof(mulColor));
 		shaderEffect->CommitChanges(renderContext);
 		renderContext.SetStreamSource(0, primitive.GetVertexBuffer());
 		renderContext.SetIndices(primitive.GetIndexBuffer());
@@ -195,8 +197,8 @@ namespace tkEngine{
 		renderContext.SetRenderState(RS_ALPHABLENDENABLE, FALSE);
 		renderContext.SetRenderState(RS_SRCBLEND, BLEND_ONE);
 		renderContext.SetRenderState(RS_DESTBLEND, BLEND_ZERO);
+		renderContext.SetRenderState(RS_ZWRITEENABLE, TRUE);
 		renderContext.SetRenderState(RS_ZENABLE, TRUE);
-		renderContext.SetRenderState(RS_SEPARATEALPHABLENDENABL, FALSE);	//αは乗算
 		
 	}
 }

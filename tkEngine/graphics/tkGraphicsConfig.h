@@ -19,9 +19,19 @@ namespace tkEngine{
 	 * @brief	影処理のコンフィグ。
 	 */
 	struct SShadowRenderConfig{
-		bool 	isEnable;			//!<影を落とす処理が有効かどうかのフラグ。
-		int		shadowMapWidth;		//!<シャドウマップの幅。
-		int		shadowMapHeight;	//!<シャドウマップの高さ。
+		void Init()
+		{
+			isEnable = false;
+			shadowMapWidth = 512;
+			shadowMapHeight = 512;
+			isDisableSoftShadow = false;
+			numShadowMap = 1;
+		}
+		bool 	isEnable;				//!<影を落とす処理が有効かどうかのフラグ。
+		int		shadowMapWidth;			//!<シャドウマップの幅。
+		int		shadowMapHeight;		//!<シャドウマップの高さ。
+		bool	isDisableSoftShadow;	//!<ソフトシャドウが無効かどうかのフラグ。
+		int		numShadowMap;			//!<シャドウマップの枚数。(最大4枚)
 	};
 	/*!
 	* @brief	Bloomのコンフィグ
@@ -50,6 +60,12 @@ namespace tkEngine{
 		bool isEnable;					//アンチエイリアスが有効かどうかのフラグ。
 	};
 	/*!
+	* @brief	モーションブラーのコンフィグ。
+	*/
+	struct SMotionBlurConfig {
+		bool isEnable;
+	};
+	/*!
 	 * @brief	グラフィックスコンフィグ。
 	 */
 	struct SGraphicsConfig{
@@ -59,6 +75,7 @@ namespace tkEngine{
 		SReflectionMapConfig	reflectionMapConfig;	//!<リフレクションマップのコンフィグ。
 		SDofConfig				dofConfig;				//!<被写界深度のコンフィグ。
 		SAAConfig				aaConfig;				//!<アンチエイリアスのコンフィグ。
+		SMotionBlurConfig		motionBlurConfig;		//<!モーションブラーのコンフィグ。
 	};
 }
 

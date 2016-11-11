@@ -73,6 +73,8 @@ namespace tkEngine{
 			//シングルスレッド描画。
 			//深度書き込み用のレンダリングターゲットを設定。
 			renderContext[0].SetRenderTarget(1, Dof().GetDepthRenderTarget());
+			//速度書き込み用のレンダリングターゲットを設定。
+			renderContext[0].SetRenderTarget(2, MotionBlur().GetVelocityMapRenderTarget());
 			for (GameObjectList objList : m_gameObjectListArray) {
 				for (IGameObject* obj : objList) {
 					obj->RenderWrapper(renderContext[0]);
@@ -101,7 +103,7 @@ namespace tkEngine{
 				GameObjectPrio prio = go->GetPriority();
 				GameObjectList& goExecList = m_gameObjectListArray.at(prio);
 				auto it = std::find( goExecList.begin(),goExecList.end(),go );
-				if ((*it)->IsNewFromGameObjectManager()) {
+				if (it != goExecList.end() && (*it)->IsNewFromGameObjectManager()) {
 					delete (*it);
 				}
 				goExecList.erase(it);

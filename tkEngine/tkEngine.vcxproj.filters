@@ -51,6 +51,24 @@
     <Filter Include="Source Files\timer">
       <UniqueIdentifier>{c6813058-4065-4fa9-b257-2e7c0c4ee19e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\physics">
+      <UniqueIdentifier>{aa9a2833-dc9d-44dc-a3a0-0a227b1c19d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\resource">
+      <UniqueIdentifier>{4f243545-da73-4b30-9eed-387319db8256}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Sound">
+      <UniqueIdentifier>{e7f1ec8b-1792-4c6e-9e5e-0c608bf495ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\character">
+      <UniqueIdentifier>{0de922d4-3418-4774-84a2-d88020fe8447}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\camera">
+      <UniqueIdentifier>{631d124d-931e-4510-8288-4e6088bc5667}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics\sprite">
+      <UniqueIdentifier>{5a977f00-bb44-407d-bb44-34acd9466a71}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -176,9 +194,6 @@
     <ClCompile Include="graphics\tkBlur.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="graphics\tkMaterial.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="graphics\tkGaussianBlur.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
@@ -187,6 +202,57 @@
     </ClCompile>
     <ClCompile Include="graphics\postEffect\tkFxaa.cpp">
       <Filter>Source Files\graphics\postEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\tkSkinModelDataHandle.cpp">
+      <Filter>Source Files\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="resource\tkSkinModelDataResources.cpp">
+      <Filter>Source Files\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\tkSkinModelMaterial.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\tkSoundEngine.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\tkWaveFile.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\tkSoundSource.cpp">
+      <Filter>Source Files\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\tkSphereCollider.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\tkRigidBody.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\tkPhysics.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\tkMeshCollider.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\tkBoxCollider.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="physics\tkCapsuleCollider.cpp">
+      <Filter>Source Files\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="character\tkCharacterController.cpp">
+      <Filter>Source Files\character</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\sprite\tkSprite.cpp">
+      <Filter>Source Files\graphics\sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="camera\tkSpringCamera.cpp">
+      <Filter>Source Files\camera</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics\postEffect\tkMotionBlur.cpp">
+      <Filter>Source Files\graphics\postEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound\tkWaveFileBank.cpp">
+      <Filter>Source Files\Sound</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -351,6 +417,69 @@
     </ClInclude>
     <ClInclude Include="graphics\postEffect\tkFxaa.h">
       <Filter>Source Files\graphics\postEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="timer\tkGameTime.h">
+      <Filter>Source Files\timer</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\tkSkinModelDataResources.h">
+      <Filter>Source Files\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="resource\tkSkinModelDataHandle.h">
+      <Filter>Source Files\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\tkSKinModelMaterial.h">
+      <Filter>Source Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\tkSoundEngine.h">
+      <Filter>Source Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\tkWaveFile.h">
+      <Filter>Source Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\tkSoundSource.h">
+      <Filter>Source Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\tkSphereCollider.h">
+      <Filter>Source Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\tkRigidBody.h">
+      <Filter>Source Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\tkPhysics.h">
+      <Filter>Source Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\tkCapsuleCollider.h">
+      <Filter>Source Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\tkICollider.h">
+      <Filter>Source Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\tkMeshCollider.h">
+      <Filter>Source Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="physics\tkBoxCollider.h">
+      <Filter>Source Files\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="character\tkCharacterController.h">
+      <Filter>Source Files\character</Filter>
+    </ClInclude>
+    <ClInclude Include="character\tkCollisionAttr.h">
+      <Filter>Source Files\character</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\sprite\tkSprite.h">
+      <Filter>Source Files\graphics\sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="camera\tkSpringCamera.h">
+      <Filter>Source Files\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics\postEffect\tkMotionBlur.h">
+      <Filter>Source Files\graphics\postEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound\tkWaveFileBank.h">
+      <Filter>Source Files\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="util\tkNameKey.h">
+      <Filter>Source Files\util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

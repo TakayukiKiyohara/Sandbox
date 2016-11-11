@@ -20,4 +20,12 @@ namespace tkEngine{
 	const CVector3 CVector3::One = { 1.0f, 1.0f, 1.0f };
 	const CQuaternion CQuaternion::Identity = { 0.0f,  0.0f, 0.0f, 1.0f };
 
+	/*!
+	*@brief	行列からクォータニオンを作成。
+	*/
+	void CQuaternion::SetRotation(const CMatrix& m)
+	{
+		D3DXQuaternionRotationMatrix((D3DXQUATERNION*)this, (D3DXMATRIX*)&m);
+	}
+
 }

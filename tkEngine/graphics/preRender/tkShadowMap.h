@@ -13,6 +13,12 @@ namespace tkEngine{
 	class CCamera;
 	class CShadowMap : Noncopyable{
 	public:
+		static const int MAX_SHADOW_MAP = 3;						//!<シャドウマップの最大数。
+		//シャドウレシーバー用のパラメータ。
+		struct ShadowRecieverParam {
+			CMatrix		mLVP[MAX_SHADOW_MAP];
+			int			vsmFlag_numShadowMap[4];
+		};
 		//!<ライトビューの計算の仕方。
 		enum EnCalcLightViewFunc {
 			enCalcLightViewFunc_PositionDirection,	//ライトの位置と方向で計算する。
@@ -29,7 +35,7 @@ namespace tkEngine{
 		/*!
 		 * @brief	作成。
 		 */
-		void Create( int w, int h );
+		void Create( int w, int h, bool isEnableSoftShadow, int numShadowMap );
 		/*!
 		 * @brief	開放。
 		 */
@@ -46,13 +52,13 @@ namespace tkEngine{
 		/*!
 		 * @brief	シャドウマップのテクスチャを取得。
 		 */
-		const CTexture* GetTexture() const
+		const CTexture* GetTexture(int texNo) const
 		{
-#ifdef USE_VSM
-			return m_blur.GetTexture();
-#else
-			return m_shadowMapRT.GetTexture();
-#endif
+			TK_ASSERT(texNo < MAX_SHADOW_MAP, "texNo is invalid");
+			if (!m_isDisableVSM) {
+				return m_blur[texNo].GetTexture();
+			}
+			return m_shadowMapRT[texNo].GetTexture();
 		}
 		/*!
 		 * @brief	ライトの方向を設定。
@@ -84,7 +90,7 @@ namespace tkEngine{
 		*/
 		const CMatrix& GetLVPMatrix() const
 		{
-			return m_LVPMatrix;
+			return m_LVPMatrix[0];
 		}
 		/*!
 		* @brief	遠平面を設定。
@@ -139,27 +145,36 @@ namespace tkEngine{
 		{
 			m_calcLightViewFunc = func;
 		}
+		/*!
+		* @brief	シャドウレシーバー用のパラメータを取得。
+		*/
+		const ShadowRecieverParam& GetShadowRecieverParam() const
+		{
+			return m_shadowRecieverParam;
+		}
 	private:
-		bool						m_isEnable;				//!<有効？
-		CRenderTarget				m_shadowMapRT;			//!<シャドウマップを書き込むレンダリングターゲット。
-		std::vector<IShadowCaster*>	m_shadowCaster;			//!<シャドウキャスター。
-		CEffect*					m_pShadowMapEffect;		//!<シャドウマップのエフェクト。
-		CVector3					m_lightPosition;		//!<ライトの位置。
-		CVector3					m_lightDirection;		//!<ライトの向き。
-		CVector3					m_lightTarget;			//!<注視点
-		CMatrix						m_lvMatrix;
-		CMatrix						m_LVPMatrix;			//!<ライトビュープロジェクション行列。
-		CMatrix						m_projectionMatrix;
-		float						m_near;					//!<近平面。
-		float						m_far;					//!<遠平面。
-		float						m_accpect;
-		float						m_shadowAreaW;			//!<影を落とす範囲の幅。
-		float						m_shadowAreaH;			//!<影を落とす範囲の高さ。
-		CCamera*					m_camera;				//!<PSMを計算するときに使用するカメラ。
-		EnCalcLightViewFunc			m_calcLightViewFunc;	//!<ライトビューの計算方法。
-#ifdef USE_VSM
-		CBlur						m_blur;			//!<深度マップの平均値を求めるためのブラー処理。
-#endif 
+		bool								m_isEnable;								//!<有効？
+		int									m_numShadowMap;							//!<シャドウマップの枚数。
+		std::vector<IShadowCaster*>			m_shadowCaster;							//!<シャドウキャスター。
+		CEffect*							m_pShadowMapEffect;						//!<シャドウマップのエフェクト。
+		CVector3							m_lightPosition;						//!<ライトの位置。
+		CVector3							m_lightDirection;						//!<ライトの向き。
+		CVector3							m_lightTarget;							//!<注視点
+		CMatrix								m_lvMatrix;
+		CMatrix								m_LVPMatrix[MAX_SHADOW_MAP];			//!<ライトビュープロジェクション行列。
+		CMatrix								m_projectionMatrix;
+		float								m_near;									//!<近平面。
+		float								m_far;									//!<遠平面。
+		float								m_accpect;
+		float								m_shadowAreaW[MAX_SHADOW_MAP];			//!<影を落とす範囲の幅。
+		float								m_shadowAreaH[MAX_SHADOW_MAP];			//!<影を落とす範囲の高さ。
+		CCamera*							m_camera;								//!<PSMを計算するときに使用するカメラ。
+		EnCalcLightViewFunc					m_calcLightViewFunc;					//!<ライトビューの計算方法。
+		bool								m_isDisableVSM;							//!<VSMが無効？
+		CBlur								m_blur[MAX_SHADOW_MAP];					//!<深度マップの平均値を求めるためのブラー処理。
+		CRenderTarget						m_shadowMapRT[MAX_SHADOW_MAP];			//!<シャドウマップを書き込むレンダリングターゲット。
+		ShadowRecieverParam					m_shadowRecieverParam;					//!<シャドウレシーバー用のパラメータ。
+		
 	};
 }
 

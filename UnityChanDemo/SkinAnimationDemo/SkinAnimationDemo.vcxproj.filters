@@ -5,13 +5,24 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Enemy">
+      <UniqueIdentifier>{1e3b9589-09f0-4826-9979-f4562d2ea7ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Enemy\HFSM">
+      <UniqueIdentifier>{3ab7919d-4886-4d5d-9841-557313d3c192}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Map">
+      <UniqueIdentifier>{a8720f2c-e606-441c-b284-80db204b8bfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Player">
+      <UniqueIdentifier>{21f05900-a4dc-4bec-abbc-a6640d4a9a78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\HUD">
+      <UniqueIdentifier>{19ef75f3-9793-422a-af19-e7c1586a26ea}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -19,9 +30,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UnityChan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UnityChanInstance.cpp">
@@ -33,24 +41,75 @@
     <ClCompile Include="Car.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Map.cpp">
+    <ClCompile Include="EnemyTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MapChip.cpp">
+    <ClCompile Include="Enemy\Enemy_00.cpp">
+      <Filter>Source Files\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\EnemyManager.cpp">
+      <Filter>Source Files\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\HFSM\EnemyStateSearch.cpp">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\HFSM\EnemyStateWalk.cpp">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\HFSM\EnemyStateAttack.cpp">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\HFSM\EnemyStateFind.cpp">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\HFSM\EnemyStateRun.cpp">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\HFSM\EnemyStateDamage.cpp">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="DamageCollisionWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sky.cpp">
+    <ClCompile Include="Map\MapChip.cpp">
+      <Filter>Source Files\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\Ground.cpp">
+      <Filter>Source Files\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\Map.cpp">
+      <Filter>Source Files\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Map\Sky.cpp">
+      <Filter>Source Files\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\Player.cpp">
+      <Filter>Source Files\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationEventController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Ground.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Enemy\HFSM\EnemyStateDeath.cpp">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\HFSM\EnemyStateIdle.cpp">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\Enemy.cpp">
+      <Filter>Source Files\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy\EnemySensor.cpp">
+      <Filter>Source Files\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD\PlayerHPBar.cpp">
+      <Filter>Source Files\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD\PlayerMPBar.cpp">
+      <Filter>Source Files\HUD</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UnityChan.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="UnityChanInstance.h">
@@ -62,17 +121,83 @@
     <ClInclude Include="Car.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Map.h">
+    <ClInclude Include="EnemyTest.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="MapChip.h">
+    <ClInclude Include="Enemy\Enemy_00.h">
+      <Filter>Source Files\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\HFSM\IEnemyState.h">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\HFSM\EnemyStateWalk.h">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\EnemyManager.h">
+      <Filter>Source Files\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\HFSM\EnemyStateAttack.h">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\HFSM\EnemyStateFind.h">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\HFSM\EnemyStateIdle.h">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\HFSM\EnemyStateSearch.h">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\HFSM\EnemyStateRun.h">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\Enemy.h">
+      <Filter>Source Files\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\HFSM\EnemyStateDamage.h">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageCollisionWorld.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sky.h">
+    <ClInclude Include="Map\Map.h">
+      <Filter>Source Files\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\MapChip.h">
+      <Filter>Source Files\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\Ground.h">
+      <Filter>Source Files\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Map\Sky.h">
+      <Filter>Source Files\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\Player.h">
+      <Filter>Source Files\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationEventController.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Ground.h">
+    <ClInclude Include="AnimationEventMacro.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\HFSM\EnemyStateDeath.h">
+      <Filter>Source Files\Enemy\HFSM</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\EnemyParameter.h">
+      <Filter>Source Files\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\EnemySensor.h">
+      <Filter>Source Files\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD\PlayerHPBar.h">
+      <Filter>Source Files\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy\EnemyAnimationEventTbl.h">
+      <Filter>Source Files\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD\PlayerMPBar.h">
+      <Filter>Source Files\HUD</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

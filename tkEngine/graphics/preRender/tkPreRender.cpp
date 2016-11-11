@@ -24,7 +24,11 @@ namespace tkEngine{
 			m_idMap.Create(config.edgeRenderConfig.idMapWidth, config.edgeRenderConfig.idMapHeight);
 		}
 		if (config.shadowRenderConfig.isEnable) {
-			m_shadowMap.Create(config.shadowRenderConfig.shadowMapWidth, config.shadowRenderConfig.shadowMapHeight);
+			m_shadowMap.Create(
+				config.shadowRenderConfig.shadowMapWidth,
+				config.shadowRenderConfig.shadowMapHeight,
+				config.shadowRenderConfig.isDisableSoftShadow,
+				config.shadowRenderConfig.numShadowMap);
 		}
 		if (config.reflectionMapConfig.isEnable) {
 			m_reflectionMap.Init(config.reflectionMapConfig.reflectionMapWidth, config.reflectionMapConfig.reflectionMapHeight);

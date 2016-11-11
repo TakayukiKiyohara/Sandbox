@@ -14,6 +14,9 @@
 #include "tkEngine/graphics/postEffect/tkPostEffect.h"
 #include "tkEngine/graphics/tkGraphicsConfig.h"
 #include "tkEngine/particle/tkParticleResources.h"
+#include "tkEngine/resource/tkSkinModelDataResources.h"
+#include "tkEngine/Sound/tkSoundEngine.h"
+#include "tkEngine/Physics/tkPhysics.h"
 
 namespace tkEngine{
 	class CReflectionMap;
@@ -83,8 +86,11 @@ namespace tkEngine{
 		 */
 		static CEngine& Instance()
 		{
-			static CEngine instance;
-			return instance;
+			static CEngine* instance = nullptr;
+			if (instance == nullptr) {
+				instance = new CEngine;
+			}
+			return *instance;
 		}
 		/*!
 		* @brief	エフェクトマネージャの取得。
@@ -184,6 +190,34 @@ namespace tkEngine{
 		{
 			return m_postEffect.GetDof();
 		}
+		/*!
+		* @brief	モーションブラーを取得。
+		*/
+		CMotionBlur& GetMotionBlur()
+		{
+			return m_postEffect.GetMotionBlur();
+		}
+		/*!
+		* @brief	スキンモデルリソースを取得。
+		*/
+		CSkinModelDataResources& GetSkinModelDataResources()
+		{
+			return m_skinModelDataResources;
+		}
+		/*!
+		* @brief	サウンドエンジンの取得。
+		*/
+		CSoundEngine& GetSoundEngine()
+		{
+			return m_soundEngine;
+		}
+		/*!
+		* @brief	物理ワールドの取得。
+		*/
+		CPhysicsWorld& GetPhysicsWorld()
+		{
+			return m_physicsWorld;
+		}
 	private:
 		/*!
 		* @brief	メインレンダリングターゲットの内容をバックバッファにコピー。
@@ -231,6 +265,9 @@ namespace tkEngine{
 		CKeyInput								m_keyInput;					//!<キー入力。
 		CParticleResources						m_particleResource;			//!<パーティクルのリソース管理。
 		CFont									m_fpsFont;					//!<FPSを表示するデバッグフォント。
+		CSkinModelDataResources					m_skinModelDataResources;	//!<スキンモデルデータリソース。
+		CSoundEngine							m_soundEngine;				//!<サウンドエンジン。
+		CPhysicsWorld							m_physicsWorld;				//!<物理ワールド。
 	};
 	static inline CEngine& Engine()
 	{
@@ -267,6 +304,22 @@ namespace tkEngine{
 	static inline CDof& Dof()
 	{
 		return CEngine::Instance().GetDof();
+	}
+	static inline CMotionBlur& MotionBlur()
+	{
+		return CEngine::Instance().GetMotionBlur();
+	}
+	static inline CSkinModelDataResources& SkinModelDataResources()
+	{
+		return CEngine::Instance().GetSkinModelDataResources();
+	}
+	static inline CSoundEngine& SoundEngine()
+	{
+		return CEngine::Instance().GetSoundEngine();
+	}
+	static inline CPhysicsWorld& PhysicsWorld()
+	{
+		return CEngine::Instance().GetPhysicsWorld();
 	}
 }
 

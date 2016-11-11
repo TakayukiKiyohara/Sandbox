@@ -22,6 +22,8 @@ sampler SceneSampler = sampler_state
 	MipFilter = LINEAR;
 	MinFilter = LINEAR;
 	MagFilter = LINEAR;
+	AddressU = CLAMP;
+    AddressV = CLAMP;
 };
 
 

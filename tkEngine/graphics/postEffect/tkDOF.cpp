@@ -38,12 +38,15 @@ namespace tkEngine{
 			//メインと同じ幅と高さ。
 			int w = Engine().GetFrameBufferWidth();
 			int h = Engine().GetFrameBufferHeight();
-			//32bitでリッチにやってみる。
-			m_depthRT.Create(w, h, 1, FMT_R32F, FMT_INVALID, MULTISAMPLE_NONE, 0);
+			//16bit。
+			m_depthRT.Create(w, h, 1, FMT_R16F, FMT_INVALID, MULTISAMPLE_NONE, 0);
+			
 			m_blurForward.Init(w, h, *Engine().GetMainRenderTarget().GetTexture());
 			m_blurBack.Init(w, h, *Engine().GetMainRenderTarget().GetTexture());
-			m_blurBack.SetBlurPower(1.0f);
-			m_blurForward.SetBlurPower(10.0f);
+			m_blurBack.SetBlurPower(2.0f);
+			m_blurBack.SetUseWeights(CGaussianBlur::enUseWeight_8);
+			m_blurForward.SetBlurPower(20.0f);
+			m_blurForward.SetUseWeights(CGaussianBlur::enUseWeight_8);
 			m_effect = EffectManager().LoadEffect("Assets/presetShader/dof.fx");
 		}
 	}
@@ -65,38 +68,44 @@ namespace tkEngine{
 
 			//ボケ画像を作成する。
 			//奥ボケ
-			m_blurBack.SetSrcTexture(*Engine().GetMainRenderTarget().GetTexture());
-			m_blurBack.Draw(renderContext);
+			{
+				CPIXPerfTag tag(renderContext, L"CDof::Render(back blur)");
+				m_blurBack.SetSrcTexture(*Engine().GetMainRenderTarget().GetTexture());
+				m_blurBack.Draw(renderContext);
+			}
 			//手前ボケ
-			m_blurForward.SetSrcTexture(*Engine().GetMainRenderTarget().GetTexture());
-			m_blurForward.Draw(renderContext);
+			{
+				CPIXPerfTag tag(renderContext, L"CDof::Render(forward blur)");
+				m_blurForward.SetSrcTexture(*Engine().GetMainRenderTarget().GetTexture());
+				m_blurForward.Draw(renderContext);
+			}
 			
 			//合成。
-			m_effect->SetTechnique(renderContext, "Dof");
-			m_effect->Begin(renderContext);
-			m_effect->BeginPass(renderContext, 0);
-			m_effect->SetValue(renderContext, "g_dofParam", dofParam, sizeof(dofParam));
-			m_effect->SetTexture(renderContext, "g_scene", Engine().GetMainRenderTarget().GetTexture());
-			m_effect->SetTexture(renderContext, "g_depthTexture", m_depthRT.GetTexture());
-			m_effect->SetTexture(renderContext, "g_blurBack", m_blurBack.GetTexture());
-			m_effect->SetTexture(renderContext, "g_blurForward", m_blurForward.GetTexture());
+			{
+				CPIXPerfTag tag(renderContext, L"CDof::Render(final)");
+				m_effect->SetTechnique(renderContext, "Dof");
+				m_effect->Begin(renderContext);
+				m_effect->BeginPass(renderContext, 0);
+				m_effect->SetValue(renderContext, "g_dofParam", dofParam, sizeof(dofParam));
+				m_effect->SetTexture(renderContext, "g_scene", Engine().GetMainRenderTarget().GetTexture());
+				m_effect->SetTexture(renderContext, "g_depthTexture", m_depthRT.GetTexture());
+				m_effect->SetTexture(renderContext, "g_blurBack", m_blurBack.GetTexture());
+				m_effect->SetTexture(renderContext, "g_blurForward", m_blurForward.GetTexture());
 
-			float texSize[] = {
-				s_cast<float>(m_depthRT.GetWidth()),
-				s_cast<float>(m_depthRT.GetHeight()),
-			};
-			m_effect->SetValue(renderContext, "g_sceneTexSize", texSize, sizeof(texSize));
-			Engine().ToggleMainRenderTarget();
-			renderContext.SetRenderTarget(0, &Engine().GetMainRenderTarget());
-			m_effect->CommitChanges(renderContext);
-			
-			Engine().ToggleMainRenderTarget();
-			renderContext.SetRenderTarget(0, &Engine().GetMainRenderTarget());
-			
-			postEffect->RenderFullScreen(renderContext);
-			m_effect->EndPass(renderContext);
-			m_effect->End(renderContext);
+				float texSize[] = {
+					s_cast<float>(m_depthRT.GetWidth()),
+					s_cast<float>(m_depthRT.GetHeight()),
+				};
+				m_effect->SetValue(renderContext, "g_sceneTexSize", texSize, sizeof(texSize));
+				m_effect->CommitChanges(renderContext);
 
+				Engine().ToggleMainRenderTarget();
+				renderContext.SetRenderTarget(0, &Engine().GetMainRenderTarget());
+
+				postEffect->RenderFullScreen(renderContext);
+				m_effect->EndPass(renderContext);
+				m_effect->End(renderContext);
+			}
 			
 		}
 	}

@@ -213,12 +213,12 @@ namespace tkEngine{
 			int w = CEngine::Instance().GetFrameBufferWidth();
 			int h = CEngine::Instance().GetFrameBufferHeight();
 			//輝度抽出用のレンダリングターゲットを作成。
-			m_luminanceRenderTarget.Create(w, h, 1, FMT_A8R8G8B8, FMT_INVALID, MULTISAMPLE_NONE, 0);
+			m_luminanceRenderTarget.Create(w, h, 1, FMT_A16B16G16R16F, FMT_INVALID, MULTISAMPLE_NONE, 0);
 			//ダウンサンプリング用のレンダリングターゲットを作成。
-			m_downSamplingRenderTarget[0].Create(w >> 1, h, 1, FMT_A8R8G8B8, FMT_INVALID, MULTISAMPLE_NONE, 0);			//横ブラー用。
-			m_downSamplingRenderTarget[1].Create(w >> 1, h >> 1, 1, FMT_A8R8G8B8, FMT_INVALID, MULTISAMPLE_NONE, 0);	//縦ブラー用。
-			m_downSamplingRenderTarget[2].Create(w >> 2, h, 1, FMT_A8R8G8B8, FMT_INVALID, MULTISAMPLE_NONE, 0);			//横ブラー用。
-			m_downSamplingRenderTarget[3].Create(w >> 2, h >> 2, 1, FMT_A8R8G8B8, FMT_INVALID, MULTISAMPLE_NONE, 0);	//縦ブラー用。
+			m_downSamplingRenderTarget[0].Create(w >> 1, h, 1, FMT_A16B16G16R16F, FMT_INVALID, MULTISAMPLE_NONE, 0);			//横ブラー用。
+			m_downSamplingRenderTarget[1].Create(w >> 1, h >> 1, 1, FMT_A16B16G16R16F, FMT_INVALID, MULTISAMPLE_NONE, 0);	//縦ブラー用。
+			m_downSamplingRenderTarget[2].Create(w >> 2, h, 1, FMT_A16B16G16R16F, FMT_INVALID, MULTISAMPLE_NONE, 0);			//横ブラー用。
+			m_downSamplingRenderTarget[3].Create(w >> 2, h >> 2, 1, FMT_A16B16G16R16F, FMT_INVALID, MULTISAMPLE_NONE, 0);	//縦ブラー用。
 			m_pEffect = CEngine::Instance().EffectManager().LoadEffect("Assets/presetShader/bloom.fx");
 			m_isEnable = true;
 		}

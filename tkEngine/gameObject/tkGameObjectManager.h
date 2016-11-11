@@ -77,6 +77,8 @@ namespace tkEngine{
 			go->Awake();
 			unsigned int hash = MakeGameObjectNameKey(objectName);
 			m_gameObjectListArray.at(prio).push_back(go);
+			go->m_isRegist = true;
+			go->m_priority = prio;
 		}
 		/*!
 		 *@brief	ゲームオブジェクトのnew
@@ -94,6 +96,8 @@ namespace tkEngine{
 			newObject->SetMarkNewFromGameObjectManager();
 			unsigned int hash = MakeGameObjectNameKey(objectName);
 			m_gameObjectListArray.at(prio).push_back(newObject);
+			newObject->m_isRegist = true;
+			newObject->m_priority = prio;
 			return newObject;
 		}
 		/*!
@@ -101,9 +105,12 @@ namespace tkEngine{
 		 */
 		void DeleteGameObject( IGameObject* gameObject )
 		{
-			gameObject->SetDeadMark();
-			gameObject->OnDestroy();
-			m_deleteObjectArray.at(gameObject->GetPriority()).push_back(gameObject);
+			if (gameObject->m_isRegist) {
+				gameObject->SetDeadMark();
+				gameObject->OnDestroy();
+				gameObject->m_isRegist = false;
+				m_deleteObjectArray.at(gameObject->GetPriority()).push_back(gameObject);
+			}
 		}
 	private:
 		/*!

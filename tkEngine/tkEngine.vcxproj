@@ -70,21 +70,21 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(ProjectDir)../;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(ProjectDir)../;$(IncludePath);$(ProjectDir)/exlib/bulletPhysics/src;$(ProjectDir)/bulletPhysics/src</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
     <IntDir>$(Configuration)Objects\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(ProjectDir)/../;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(ProjectDir)/../;$(IncludePath);$(ProjectDir)/bulletPhysics/src;$(ProjectDir)/bulletPhysics/src</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;$(LibraryPath)</LibraryPath>
     <IntDir>$(Configuration)Objects\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;$(LibraryPath)</LibraryPath>
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(ProjectDir)/../;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(ProjectDir)/../;$(IncludePath);$(ProjectDir)/exlib/bulletPhysics/src;$(ProjectDir)/bulletPhysics/src</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(ProjectDir)/../;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;$(ProjectDir)/../;$(IncludePath);$(ProjectDir)/exlib/bulletPhysics/src;$(ProjectDir)/bulletPhysics/src</IncludePath>
     <LibraryPath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -114,6 +114,7 @@
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile>tkEngine/tkEnginePrecompile.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -135,6 +136,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,12 +151,16 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <PrecompiledHeaderFile>tkEngine/tkEnginePrecompile.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -170,18 +176,22 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AI\tkPathFinding.cpp" />
+    <ClCompile Include="camera\tkSpringCamera.cpp" />
+    <ClCompile Include="character\tkCharacterController.cpp" />
     <ClCompile Include="gameObject\tkGameObject.cpp" />
     <ClCompile Include="gameObject\tkgameobjectmanager.cpp" />
     <ClCompile Include="graphics\postEffect\tkBloomRender.cpp" />
     <ClCompile Include="graphics\postEffect\tkDOF.cpp" />
     <ClCompile Include="graphics\postEffect\tkEdgeRender.cpp" />
     <ClCompile Include="graphics\postEffect\tkFxaa.cpp" />
+    <ClCompile Include="graphics\postEffect\tkMotionBlur.cpp" />
     <ClCompile Include="graphics\postEffect\tkPostEffect.cpp" />
     <ClCompile Include="graphics\preRender\tkIDMap.cpp" />
     <ClCompile Include="graphics\preRender\tkPreRender.cpp" />
     <ClCompile Include="graphics\preRender\tkReflectionMap.cpp" />
     <ClCompile Include="graphics\preRender\tkShadowCaster.cpp" />
     <ClCompile Include="graphics\preRender\tkShadowMap.cpp" />
+    <ClCompile Include="graphics\sprite\tkSprite.cpp" />
     <ClCompile Include="graphics\tkAnimation.cpp" />
     <ClCompile Include="graphics\tkBlur.cpp" />
     <ClCompile Include="graphics\tkCamera.cpp" />
@@ -190,13 +200,13 @@
     <ClCompile Include="graphics\tkFont.cpp" />
     <ClCompile Include="graphics\tkGaussianBlur.cpp" />
     <ClCompile Include="graphics\tkIndexBuffer.cpp" />
-    <ClCompile Include="graphics\tkMaterial.cpp" />
     <ClCompile Include="graphics\tkPrimitive.cpp" />
     <ClCompile Include="graphics\tkRenderCommandBuffer.cpp" />
     <ClCompile Include="graphics\tkRenderContext.cpp" />
     <ClCompile Include="graphics\tkRenderTarget.cpp" />
     <ClCompile Include="graphics\tkSkinModel.cpp" />
     <ClCompile Include="graphics\tkSkinModelData.cpp" />
+    <ClCompile Include="graphics\tkSkinModelMaterial.cpp" />
     <ClCompile Include="graphics\tkTexture.cpp" />
     <ClCompile Include="graphics\tkVertexBuffer.cpp" />
     <ClCompile Include="Input\tkKeyInput.cpp" />
@@ -207,10 +217,22 @@
     <ClCompile Include="particle\tkParticle.cpp" />
     <ClCompile Include="particle\tkParticleEmitter.cpp" />
     <ClCompile Include="particle\tkParticleResources.cpp" />
+    <ClCompile Include="physics\tkBoxCollider.cpp" />
+    <ClCompile Include="physics\tkCapsuleCollider.cpp" />
+    <ClCompile Include="physics\tkMeshCollider.cpp" />
+    <ClCompile Include="physics\tkPhysics.cpp" />
+    <ClCompile Include="physics\tkRigidBody.cpp" />
+    <ClCompile Include="physics\tkSphereCollider.cpp" />
     <ClCompile Include="random\tkRandom.cpp" />
+    <ClCompile Include="resource\tkSkinModelDataHandle.cpp" />
+    <ClCompile Include="resource\tkSkinModelDataResources.cpp" />
     <ClCompile Include="shape\tkBoxShape.cpp" />
     <ClCompile Include="shape\tkShapeBase.cpp" />
     <ClCompile Include="shape\tkSphereShape.cpp" />
+    <ClCompile Include="Sound\tkSoundEngine.cpp" />
+    <ClCompile Include="Sound\tkSoundSource.cpp" />
+    <ClCompile Include="Sound\tkWaveFile.cpp" />
+    <ClCompile Include="Sound\tkWaveFileBank.cpp" />
     <ClCompile Include="tkEngine.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -229,6 +251,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AI\tkPathFinding.h" />
+    <ClInclude Include="camera\tkSpringCamera.h" />
+    <ClInclude Include="character\tkCharacterController.h" />
+    <ClInclude Include="character\tkCollisionAttr.h" />
     <ClInclude Include="debug\tkAssert.h" />
     <ClInclude Include="debug\tkLog.h" />
     <ClInclude Include="gameObject\tkGameObject.h" />
@@ -237,12 +262,14 @@
     <ClInclude Include="graphics\postEffect\tkDOF.h" />
     <ClInclude Include="graphics\postEffect\tkEdgeRender.h" />
     <ClInclude Include="graphics\postEffect\tkFxaa.h" />
+    <ClInclude Include="graphics\postEffect\tkMotionBlur.h" />
     <ClInclude Include="graphics\postEffect\tkPostEffect.h" />
     <ClInclude Include="graphics\preRender\tkIDMap.h" />
     <ClInclude Include="graphics\preRender\tkPreRender.h" />
     <ClInclude Include="graphics\preRender\tkReflectionMap.h" />
     <ClInclude Include="graphics\preRender\tkShadowCaster.h" />
     <ClInclude Include="graphics\preRender\tkShadowMap.h" />
+    <ClInclude Include="graphics\sprite\tkSprite.h" />
     <ClInclude Include="graphics\tkBlur.h" />
     <ClInclude Include="graphics\tkCamera.h" />
     <ClInclude Include="graphics\tkEffect.h" />
@@ -261,6 +288,7 @@
     <ClInclude Include="graphics\tkRenderTarget.h" />
     <ClInclude Include="graphics\tkSkinModel.h" />
     <ClInclude Include="graphics\tkSkinModelData.h" />
+    <ClInclude Include="graphics\tkSKinModelMaterial.h" />
     <ClInclude Include="graphics\tkTexture.h" />
     <ClInclude Include="graphics\tkVertexBuffer.h" />
     <ClInclude Include="Input\tkKeyInput.h" />
@@ -271,16 +299,31 @@
     <ClInclude Include="particle\tkParticle.h" />
     <ClInclude Include="particle\tkParticleEmitter.h" />
     <ClInclude Include="particle\tkParticleResources.h" />
+    <ClInclude Include="physics\tkBoxCollider.h" />
+    <ClInclude Include="physics\tkCapsuleCollider.h" />
+    <ClInclude Include="physics\tkICollider.h" />
+    <ClInclude Include="physics\tkMeshCollider.h" />
+    <ClInclude Include="physics\tkPhysics.h" />
+    <ClInclude Include="physics\tkRigidBody.h" />
+    <ClInclude Include="physics\tkSphereCollider.h" />
     <ClInclude Include="policy\tkNoncopyable.h" />
     <ClInclude Include="random\tkRandom.h" />
+    <ClInclude Include="resource\tkSkinModelDataHandle.h" />
+    <ClInclude Include="resource\tkSkinModelDataResources.h" />
     <ClInclude Include="shape\tkBoxShape.h" />
     <ClInclude Include="shape\tkShapeBase.h" />
     <ClInclude Include="shape\tkShapeVertex.h" />
     <ClInclude Include="shape\tkSphereShape.h" />
+    <ClInclude Include="Sound\tkSoundEngine.h" />
+    <ClInclude Include="Sound\tkSoundSource.h" />
+    <ClInclude Include="Sound\tkWaveFile.h" />
+    <ClInclude Include="Sound\tkWaveFileBank.h" />
+    <ClInclude Include="timer\tkGameTime.h" />
     <ClInclude Include="timer\tkStopwatch.h" />
     <ClInclude Include="tkEngine.h" />
     <ClInclude Include="tkEnginePreCompile.h" />
     <ClInclude Include="typedef.h" />
+    <ClInclude Include="util\tkNameKey.h" />
     <ClInclude Include="util\tkUtil.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

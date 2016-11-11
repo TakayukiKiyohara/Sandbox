@@ -12,6 +12,8 @@ sampler_state
     MipFilter = LINEAR;
     MinFilter = LINEAR;
     MagFilter = LINEAR;
+    AddressU = CLAMP;
+    AddressV = CLAMP;
 };
 
 
@@ -37,13 +39,8 @@ VS_OUTPUT VSSamplingLuminance( VS_INPUT In )
 float4 PSSamplingLuminance( VS_OUTPUT In ) : COLOR
 {
 	float4 color = tex2D(g_SceneSampler, In.tex );
-#ifdef USE_BLOOM_FLOATING_BUFFER
 	float t = dot( color.xyz, float3(0.2125f, 0.7154f, 0.0721f) );
 	clip(t - 1.001f);			//輝度が1.0以下ならピクセルキル
-#else
-	clip(color.a-0.001f);
-	float t = 1.0f / color.a;	//輝度の復元。
-#endif
 	color.xyz *= (t - 1.0f);
 	color.a = 1.0f;
 	return color;

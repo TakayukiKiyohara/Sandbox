@@ -8,13 +8,21 @@
 #include "tkEngine/graphics/tkLight.h"
 
 namespace tkEngine{
+	CLight	CShapeBase::m_defaultLight;
+	bool CShapeBase::m_isInitDefaultLight = false;
 	CShapeBase::CShapeBase() :
 		m_isCreatePrimitive(false),
 		m_pPrimitive(nullptr),
 		m_position(CVector3::Zero),
 		m_worldMatrix(CMatrix::Identity),
-		m_rotationMatrix(CMatrix::Identity)
+		m_rotationMatrix(CMatrix::Identity),
+		m_pEffect(nullptr)
 	{
+		if (!m_isInitDefaultLight) {
+			//デフォルトライトの初期化。
+			m_defaultLight.SetAmbinetLight(CVector3(1.0f, 1.0f, 1.0f));
+			m_isInitDefaultLight = false;
+		}
 	}
 	CShapeBase::~CShapeBase()
 	{
@@ -47,6 +55,7 @@ namespace tkEngine{
 	}
 	void CShapeBase::CreateEffect(bool hasNormal)
 	{
+		
 		if (hasNormal) {
 			m_pEffect = tkEngine::CEngine::Instance().EffectManager().LoadEffect("Assets/presetShader/ColorNormalPrim.fx");
 		}
@@ -104,7 +113,7 @@ namespace tkEngine{
 			};
 			m_pEffect->SetValue(renderContext, "g_mLVP", &mLVP, sizeof(mLVP));
 			m_pEffect->SetValue(renderContext, "g_farNear", farNear, sizeof(farNear));
-			m_pEffect->SetTexture(renderContext, "g_shadowMap", shadowMap.GetTexture());
+			m_pEffect->SetTexture(renderContext, "g_shadowMap_0", shadowMap.GetTexture(0));
 			if (pmWorldMatrix) {
 				m_pEffect->SetValue(renderContext, "g_mWorld", pmWorldMatrix, sizeof(*pmWorldMatrix));
 			}

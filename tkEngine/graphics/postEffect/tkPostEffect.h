@@ -9,6 +9,7 @@
 #include "tkEngine/graphics/postEffect/tkBloomRender.h"
 #include "tkEngine/graphics/postEffect/tkDOF.h"
 #include "tkEngine/graphics/postEffect/tkFxaa.h"
+#include "tkEngine/graphics/postEffect/tkMotionBlur.h"
 
 namespace tkEngine{
 	/*!
@@ -47,11 +48,19 @@ namespace tkEngine{
 		{
 			return m_dof;
 		}
+		/*!
+		* @brief	モーションブラーを取得。
+		*/
+		CMotionBlur& GetMotionBlur()
+		{
+			return m_motionBlur;
+		}
 	private:
 		CEdgeRender		m_edgeRender;		//!<エッジ描画。
 		CBloomRender	m_bloomRender;		//!<Bloom。
 		CDof			m_dof;				//!<被写界深度
-		CFxaa			m_fxaa;
+		CFxaa			m_fxaa;				//!<FXAA
+		CMotionBlur		m_motionBlur;		//!<モーションブラー。
 		CPrimitive		m_fullscreenRenderPrim;	//!<フルスクリーンをレンダリングするためのプリミティブ。
 	};
 }

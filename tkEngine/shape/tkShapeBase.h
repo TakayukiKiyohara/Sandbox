@@ -4,6 +4,8 @@
 #ifndef _TKSHAPEBASE_H_
 #define _TKSHAPEBASE_H_
 
+#include "tkEngine/graphics/tkLight.h"
+
 namespace tkEngine{
 	class CLight;
 	/*!
@@ -98,9 +100,9 @@ namespace tkEngine{
 		void RenderLightWVP(
 			CRenderContext& renderContext,
 			const CMatrix& mWVP,
-			const CLight& light,
-			bool isIluminance,
-			bool isReceiveShadow,
+			const CLight& light = m_defaultLight,
+			bool isIluminance = false,
+			bool isReceiveShadow = false,
 			const CMatrix* pmWorldMatrix = nullptr
 		);
 	protected:
@@ -117,6 +119,8 @@ namespace tkEngine{
 		CMatrix		m_worldMatrix;		//!<ワールド行列。
 		CMatrix		m_rotationMatrix;	//!<ワールド回転行列。
 		CEffect*	m_pEffect;			//!<エフェクト。
+		static CLight	m_defaultLight;		//!<デフォルトライト。
+		static bool m_isInitDefaultLight;		//!<デフォルトライトの初期化フラグ。
 	};
 	struct SMergeInfo{
 		int	delVertNo;
@@ -141,7 +145,7 @@ namespace tkEngine{
 	{	
 		//面法線を求める。
 		TK_ASSERT( primType == CPrimitive::eTriangleList, "not implement TraiangleStrip yet...");
-		int numFace = indexBuffer.size() / 3;
+		int numFace = (int)indexBuffer.size() / 3;
 		std::unique_ptr<SPolygonInfo[]> polygonInfo;
 		std::vector<std::list<SPolygonInfo>>	polygoninfos;
 		polygoninfos.resize(vertexBuffer.size());

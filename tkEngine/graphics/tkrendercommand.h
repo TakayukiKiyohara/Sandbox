@@ -40,6 +40,8 @@ namespace tkEngine{
 		enRenderCommand_DrawSkinModelToShadowMap,
 		enRenderCommand_PerfBeginEvent,
 		enRenderCommand_PerfEndEvent,
+		enRenderCommand_SetVertexShaderConstantF,
+		enRenderCommand_SetPixelShaderConstantF,
 		eRenderCommand_Undef
 	};
 	/*!
@@ -316,7 +318,7 @@ namespace tkEngine{
 			m_pEffect(pEffect)
 		{
 			size_t nameLen = strlen(tecName);
-			m_tecName = s_cast<char*>(renderContext.AllocFromCommandBuffer(nameLen + 1));
+			m_tecName = s_cast<char*>(renderContext.AllocFromCommandBuffer((int)nameLen + 1));
 			memcpy(m_tecName, tecName, nameLen + 1);
 		}
 		void Execute(LPDIRECT3DDEVICE9 pD3DDevice)
@@ -439,7 +441,7 @@ namespace tkEngine{
 			m_pEffect(pEffect)
 		{
 			size_t nameLen = strlen(parameterName);
-			m_textureName = s_cast<char*>(renderContext.AllocFromCommandBuffer(nameLen + 1));
+			m_textureName = s_cast<char*>(renderContext.AllocFromCommandBuffer((int)nameLen + 1));
 			memcpy(m_textureName, parameterName, nameLen + 1);
 		}
 		void Execute(LPDIRECT3DDEVICE9 pD3DDevice)
@@ -555,6 +557,54 @@ namespace tkEngine{
 		void Execute(LPDIRECT3DDEVICE9 pD3DDevice)
 		{
 			D3DPERF_EndEvent();
+		}
+	};
+	/*!
+	*@brief	IDirect3DDevice9::SetVertexShaderConstantF
+	*/
+	class CRenderCommand_SetVertexShaderConstantF : public CRenderCommandBase {
+		int m_startRegisterNo;
+		float* m_constData;
+		int m_vertexCount;
+	public:
+		/*!
+		*@brief	コンストラクタ。
+		* 引数はIDirect3DDevice9::SetVertexShaderConstantFと同じ。
+		*/
+		CRenderCommand_SetVertexShaderConstantF(int startRegisterNo, float* pConstData, int vertexCount) :
+			CRenderCommandBase(enRenderCommand_SetVertexShaderConstantF),
+			m_startRegisterNo(startRegisterNo),
+			m_constData(pConstData),
+			m_vertexCount(vertexCount)
+		{
+		}
+		void Execute(LPDIRECT3DDEVICE9 pD3DDevice)
+		{
+			pD3DDevice->SetVertexShaderConstantF(m_startRegisterNo, m_constData, m_vertexCount);
+		}
+	};
+	/*!
+	*@brief	IDirect3DDevice9::SetPixelShaderConstantF
+	*/
+	class CRenderCommand_SetPixelShaderConstantF : public CRenderCommandBase {
+		int m_startRegisterNo;
+		float* m_constData;
+		int m_vertexCount;
+	public:
+		/*!
+		*@brief	コンストラクタ。
+		* 引数はIDirect3DDevice9::SetVertexShaderConstantFと同じ。
+		*/
+		CRenderCommand_SetPixelShaderConstantF(int startRegisterNo, float* pConstData, int vertexCount) :
+			CRenderCommandBase(enRenderCommand_SetPixelShaderConstantF),
+			m_startRegisterNo(startRegisterNo),
+			m_constData(pConstData),
+			m_vertexCount(vertexCount)
+		{
+		}
+		void Execute(LPDIRECT3DDEVICE9 pD3DDevice)
+		{
+			pD3DDevice->SetPixelShaderConstantF(m_startRegisterNo, m_constData, m_vertexCount);
 		}
 	};
 }

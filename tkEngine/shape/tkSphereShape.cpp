@@ -35,7 +35,7 @@ namespace tkEngine {
 				sizeof(SShapeVertex_PNC),
 				scShapeVertex_PNC_Element,
 				&vertexBuffer.at(0),
-				indexBuffer.size(),
+				(int)indexBuffer.size(),
 				eIndexFormat32,
 				&indexBuffer.at(0)
 				);
@@ -55,7 +55,7 @@ namespace tkEngine {
 				sizeof(SShapeVertex_PC),
 				scShapeVertex_PC_Element,
 				&vertexBuffer.at(0),
-				indexBuffer.size(),
+				(int)indexBuffer.size(),
 				eIndexFormat32,
 				&indexBuffer.at(0)
 			);

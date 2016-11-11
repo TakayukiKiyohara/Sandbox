@@ -18,6 +18,7 @@ namespace tkEngine{
 		blendRateTable.reset( new float[numMaxTracks] );
 		animationEndTime.reset(new double[numAnimSet]);
 		animationSets.reset(new ID3DXAnimationSet*[numAnimSet]);
+		animationLoopFlags.reset(new bool[numAnimSet]);
 		for( int i = 0; i < numMaxTracks; i++ ){
 			blendRateTable[i] = 1.0f;
 		}
@@ -25,6 +26,7 @@ namespace tkEngine{
 		for (int i = 0; i < numAnimSet; i++) {
 			pAnimController->GetAnimationSet(i, &animationSets[i]);
 			animationEndTime[i] = -1.0;
+			animationLoopFlags[i] = true;
 		}
 		localAnimationTime = 0.0;
 	}
@@ -33,6 +35,7 @@ namespace tkEngine{
 	{
 		if (animationSetIndex < numAnimSet) {
 			if (pAnimController) {
+				isAnimEnd = false;
 				isInterpolate = false;
 				playAnimationRequest.clear();
 				currentAnimationSetNo = animationSetIndex;
@@ -56,51 +59,74 @@ namespace tkEngine{
 	{
 		if (animationSetIndex < numAnimSet) {
 			if (pAnimController) {
-				if (isInterpolate) {
-					//補間中にアニメーションを終わらせるときれいにつながらないので、リクエストキューに積む。
-					RequestPlayAnimation req;
-					req.animationSetIndex = animationSetIndex;
-					req.interpolateTime = interpolateTime;
-					playAnimationRequest.push_back(req);
-				}
-				else {
-					//補間開始の印。
-					isInterpolate = true;
-					this->interpolateTime = 0.0f;
-					interpolateEndTime = interpolateTime;
-					currentTrackNo = (currentTrackNo + 1) % numMaxTracks;
-					pAnimController->SetTrackAnimationSet(currentTrackNo, animationSets[animationSetIndex]);
-					pAnimController->SetTrackEnable(currentTrackNo, TRUE);
-					pAnimController->SetTrackSpeed(currentTrackNo, 1.0f);
-					pAnimController->SetTrackPosition(currentTrackNo, 0.0f);
-					localAnimationTime = 0.0;
-					currentAnimationSetNo = animationSetIndex;
-				}
+				isAnimEnd = false;
+				//補間開始の印。
+				isInterpolate = true;
+				this->interpolateTime = 0.0f;
+				interpolateEndTime = interpolateTime;
+				int prevTrackNo = currentTrackNo;
+				currentTrackNo = (currentTrackNo + 1) % numMaxTracks;
+				pAnimController->SetTrackAnimationSet(currentTrackNo, animationSets[animationSetIndex]);
+				pAnimController->SetTrackSpeed(prevTrackNo, 0.0f);
+				pAnimController->SetTrackEnable(currentTrackNo, TRUE);
+				pAnimController->SetTrackSpeed(currentTrackNo, 1.0f);
+				pAnimController->SetTrackPosition(currentTrackNo, 0.0f);
+				localAnimationTime = 0.0;
+				currentAnimationSetNo = animationSetIndex;
+				UpdateTrackWeights();
 			}
 		}
 		else {
 			TK_LOG("warning!!! animationSetIndex is over range!!!!!");
 		}
 	}
+	/*!
+	*@brief	補間時間を元にトラックの重みを更新。
+	*/
+	void CAnimation::UpdateTrackWeights()
+	{
+		float weight = 0.0f;
+		if (interpolateTime < interpolateEndTime) {
+			weight = interpolateTime / interpolateEndTime;
+			float invWeight = 1.0f - weight;
+			//ウェイトを設定していく。
+			for (int i = 0; i < numMaxTracks; i++) {
+				if (i != currentTrackNo) {
+					pAnimController->SetTrackWeight(i, blendRateTable[i] * invWeight);
+				}
+				else {
+					pAnimController->SetTrackWeight(i, weight);
+				}
+			}
+		}
+		else {
+			for (int i = 0; i < numMaxTracks; i++) {
+				if (i != currentTrackNo) {
+					pAnimController->SetTrackWeight(i, 0.0f);
+				}
+				else {
+					pAnimController->SetTrackWeight(i, 1.0f);
+				}
+			}
+		}
+	}
+	/*!
+	*@brief	アニメーションの再生リクエストをポップ。
+	*/
+	void CAnimation::PopRequestPlayAnimation()
+	{
+		if (!playAnimationRequest.empty()) {
+			RequestPlayAnimation& req = playAnimationRequest.front();
+			PlayAnimation(req.animationSetIndex, req.interpolateTime);
+			playAnimationRequest.pop_front();
+		}
+	}
 	void CAnimation::Update(float deltaTime)
 	{
-		if (pAnimController) {
+		deltaTime *= animationSpeedRate;
+		if (pAnimController && !isAnimEnd) {
 			localAnimationTime += deltaTime;
-			
-			if (animationEndTime[currentAnimationSetNo] > 0.0 //アニメーションの終了時間が設定されている。
-				&& localAnimationTime > animationEndTime[currentAnimationSetNo] //アニメーションの終了時間を超えた。
-			) {
-				localAnimationTime -= animationEndTime[currentAnimationSetNo];
-				pAnimController->SetTrackPosition(currentTrackNo, localAnimationTime);
-				pAnimController->AdvanceTime(0, NULL);
-			}
-			else {
-				//普通に再生。
-				pAnimController->AdvanceTime(deltaTime, NULL);
-			}
 			if (isInterpolate) {
-				ID3DXAnimationSet* animSet = animationSets[2];
-				float period = animSet->GetPeriod();
 				//補間中。
 				interpolateTime += deltaTime;
 				float weight = 0.0f;
@@ -114,27 +140,46 @@ namespace tkEngine{
 							pAnimController->SetTrackEnable(i, FALSE);
 						}
 					}
-					if (!playAnimationRequest.empty()) {
-						//アニメーション補間中に別のアニメーションの補間のリクエストが来てるので連続再生。
-						RequestPlayAnimation& req = playAnimationRequest.front();
-						PlayAnimation(req.animationSetIndex, req.interpolateTime);
-						playAnimationRequest.pop_front();
-					}
 				}
 				else {
-					weight = interpolateTime / interpolateEndTime;
-					float invWeight = 1.0f - weight;
-					//ウェイトを設定していく。
-					for (int i = 0; i < numMaxTracks; i++) {
-						if (i != currentTrackNo) {
-							pAnimController->SetTrackWeight(i, blendRateTable[i] * invWeight);
-						}
-						else {
-							pAnimController->SetTrackWeight(i, weight);
-						}
-					}
+					//各トラックの重みを更新。
+					UpdateTrackWeights();
 				}
 			}
+			if (animationEndTime[currentAnimationSetNo] > 0.0 //アニメーションの終了時間が設定されている。
+				&& localAnimationTime > animationEndTime[currentAnimationSetNo] //アニメーションの終了時間を超えた。
+			) {
+				if (animationLoopFlags[currentAnimationSetNo]) {
+					localAnimationTime -= animationEndTime[currentAnimationSetNo];
+					pAnimController->SetTrackPosition(currentTrackNo, localAnimationTime);
+					pAnimController->AdvanceTime(0, NULL);
+				}
+				else {
+					isAnimEnd = true;
+				}
+			}
+			else {
+				//普通に再生。
+				if (animationSets[currentAnimationSetNo]->GetPeriod() < localAnimationTime
+					&& !animationLoopFlags[currentAnimationSetNo]) {
+					localAnimationTime = animationSets[currentAnimationSetNo]->GetPeriod();
+					isAnimEnd = true;
+				}
+				else {
+					pAnimController->AdvanceTime(deltaTime, NULL);
+				}
+			}
+
+			//ローカルタイムをトラックから取得して同期。
+			D3DXTRACK_DESC trackDesk;
+			pAnimController->GetTrackDesc(currentTrackNo, &trackDesk);
+			localAnimationTime = fmod(trackDesk.Position, animationSets[currentAnimationSetNo]->GetPeriod());
+		}
+
+		if (isAnimEnd) {
+			//アニメーション終わった。
+			//アニメーションの連続再生のリクエストをポップする。
+			PopRequestPlayAnimation();
 		}
 	}
 }

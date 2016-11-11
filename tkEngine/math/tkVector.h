@@ -7,12 +7,33 @@
 
 
 namespace tkEngine{
+	class CMatrix;
+	
 	class CVector2 {
 	public:
+		CVector2()
+		{
+
+		}
+		CVector2(float x, float y)
+		{
+			this->x = x;
+			this->y = y;
+		}
 		union {
-			struct { float x, y, z; };
-			float v[3];
+			struct { float x, y; };
+			float v[2];
 		};
+		/*!
+		* @brief	線形補間。
+		*@details
+		* this = v0 + (v1-v0) * t;
+		*/
+		void Lerp(float t, const CVector2& v0, const CVector2& v1)
+		{
+			x = v0.x + (v1.x - v0.x) * t;
+			y = v0.y + (v1.y - v0.y) * t;
+		}
 	};
 	/*!
 	 * @brief	ベクトル。
@@ -35,7 +56,7 @@ namespace tkEngine{
 		static const CVector3 AxisZ;
 		static const CVector3 One;
 	public:
-		operator D3DXVECTOR3(void) { return s_cast<D3DXVECTOR3>(*this); }
+		//operator D3DXVECTOR3(void) { return s_cast<D3DXVECTOR3>(*this); }
 		CVector3() {}
 		/*!
 		* @brief	コンストラクタ。
@@ -45,6 +66,24 @@ namespace tkEngine{
 			Set(x, y, z);
 		}
 		/*!
+		* @brief	線形補間。
+		*@details
+		* this = v0 + (v1-v0) * t;
+		*/
+		void Lerp(float t, const CVector3& v0, const CVector3& v1)
+		{
+			x = v0.x + (v1.x - v0.x) * t;
+			y = v0.y + (v1.y - v0.y) * t;
+			z = v0.z + (v1.z - v0.z) * t;
+		}
+		template<class TVector>
+		void CopyTo(TVector& dst) const
+		{
+			dst.x = x;
+			dst.y = y;
+			dst.z = z;
+		}
+		/*!
 		* @brief	ベクトルの各要素を設定。
 		*/
 		void Set(float x, float y, float z)
@@ -52,6 +91,19 @@ namespace tkEngine{
 			this->x = x;
 			this->y = y;
 			this->z = z;
+		}
+		template<class TVector>
+		void Set(TVector& v)
+		{
+			this->x = v.x;
+			this->y = v.y;
+			this->z = v.z;
+		}
+		void Set(btVector3& v)
+		{
+			this->x = v.x();
+			this->y = v.y();
+			this->z = v.z();
 		}
 		/*!
 		 * @brief	ベクトルを加算。
@@ -140,10 +192,16 @@ namespace tkEngine{
 		void Normalize()
 		{
 			float len = Length();
-			TK_ASSERT( len > 0.0f, "zero vector!!!");
-			x /= len;
-			y /= len;
-			z /= len;
+			if (len > 0.0f) {
+				x /= len;
+				y /= len;
+				z /= len;
+			}
+			else {
+				x = 0.0f;
+				y = 0.0f;
+				z = 0.0f;
+			}
 		}
 		/*!
 		* @brief	除算。
@@ -291,6 +349,11 @@ namespace tkEngine{
 			z = axis.z * s;
 		}
 		/*!
+		*@brief	行列からクォータニオンを作成。
+		*/
+		void SetRotation(const CMatrix& m);
+		
+		/*!
 		*@brief	クォータニオン同士の積。
 		*/
 		void Multiply(const CQuaternion& rot)
@@ -326,5 +389,15 @@ namespace tkEngine{
 			z = pw * qz + px * qy - py * qx + pz * qw;
 		}
 	};
+	//整数型のベクトルクラス。
+	class CVector4i {
+	public:
+		union {
+			struct { int x, y, z, w; };
+			int v[4];
+		};
+	};
 }
+
+
 #endif // _TKVECTOR_H_

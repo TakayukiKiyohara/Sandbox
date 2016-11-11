@@ -37,7 +37,10 @@ namespace tkEngine{
 		/*!
 		 *@brief	描画
 		 */
-		virtual void Render( CRenderContext& renderContext ) = 0;
+		virtual void Render(CRenderContext& renderContext)
+		{
+
+		}
 		/*!
 		 *@brief	削除されるときに呼ばれる。
 		 *@details	CGameManager::DeleteGameObjectを呼んだときに実行されます。
@@ -71,6 +74,8 @@ namespace tkEngine{
 		virtual void PreRender( CRenderContext& renderContext ) {}
 		/*!
 		 *@brief	Render関数が実行された後で呼ばれる描画処理
+		 *@details
+		 * ポストエフェクトの後で実行されます。HUDなどポストエフェクトの影響を受けたくない描画物はここでレンダリングしてください。
 		 */
 		virtual void PostRender(CRenderContext& renderContext ) {}
 		/*!
@@ -141,12 +146,14 @@ namespace tkEngine{
 		{
 			return m_isNewFromGameObjectManager;
 		}
+		
 		friend class CGameObjectManager;
 	protected:
 		GameObjectPrio	m_priority;			//!<実行優先度。
 		bool m_isStart;						//!<Startの開始フラグ。
 		bool m_isDead;						//!<死亡フラグ。
 		bool m_isNewFromGameObjectManager;	//!<GameObjectManagerでnewされた。
+		bool m_isRegist = false;			//!<GameObjectManagerに登録されている？
 		
 	};
 }

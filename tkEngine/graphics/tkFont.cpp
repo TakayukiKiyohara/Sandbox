@@ -57,7 +57,7 @@ namespace tkEngine{
 	void CFont::Draw(const char* text, int pos_x, int pos_y)
 	{
 		if (font != nullptr) {
-			int textLen = strlen(text);
+			int textLen = (int)strlen(text);
 			RECT rc = {
 				pos_x,
 				pos_y,

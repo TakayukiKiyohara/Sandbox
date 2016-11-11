@@ -22,6 +22,7 @@ namespace tkEngine{
 			uvTableSize = 1;
 			brightness = 1.0f;
 			isBillboard = true;
+			mulColor = CVector3::Zero;
 		}
 		const char* texturePath;						//!<テクスチャのファイルパス。
 		CVector3	initVelocity;						//!<初速度。
@@ -41,7 +42,7 @@ namespace tkEngine{
 		bool		isBillboard;						//!<ビルボード？
 		float		brightness;							//!<輝度。ブルームが有効になっているとこれを強くすると光が溢れます。
 		int			alphaBlendMode;						//!<0半透明合成、1加算合成。
-		
+		CVector3	mulColor;							//!<乗算カラー。
 	};
 	/*!
 	 * @brief	パーティクルの発生機
@@ -64,7 +65,7 @@ namespace tkEngine{
 		 *@param[in]	param		パーティクル生成用のパラメータ。
 		 *@param[in]	emitPosition	エミッターの座標。
 		 */
-		void Init(CRandom& random, CCamera& camera, const SParicleEmitParameter& param, const CVector3& emitPosition);
+		void Init(CRandom& random, const CCamera& camera, const SParicleEmitParameter& param, const CVector3& emitPosition);
 		void Start() override ;
 		void Update() override;
 		void Render( CRenderContext& renderContext ) override;
@@ -76,7 +77,7 @@ namespace tkEngine{
 	private:
 		float					timer;			//!<タイマー
 		CRandom*				random;			//!<乱数生成機。
-		CCamera*				camera;			//!<カメラ。
+		const CCamera*			camera;			//!<カメラ。
 		SParicleEmitParameter	param;			//!<パラメータ。
 		CVector3				emitPosition;	//!<エミッターの座標。
 		std::list<CParticle*>	particleList;	//!<パーティクルのリスト。

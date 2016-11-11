@@ -24,6 +24,6 @@ namespace tkEngine{
 #ifdef _DEBUG
 	#define TK_LOG( format, ... )	Log(format, __VA_ARGS__)
 #else // _DEBUG
-	#define TK_LOG( format, ... )	
+#define TK_LOG( format, ... )
 #endif // _DEBUG
 #endif // _TKLOG_H_

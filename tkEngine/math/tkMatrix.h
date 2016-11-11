@@ -28,7 +28,7 @@ namespace tkEngine{
 		*@brief	ベクトルと3x3行列の乗算
 		*@param[in,out]		v	乗算されるベクトル。
 		*/
-		void Mul3x3(CVector3& vOut)
+		void Mul3x3(CVector3& vOut) const
 		{
 			CVector3 vTmp = vOut;
 			vOut.x = vTmp.x * m[0][0] + vTmp.y * m[1][0] + vTmp.z * m[2][0];
@@ -39,14 +39,14 @@ namespace tkEngine{
 		*@brief	ベクトルと行列の乗算
 		*@param[in,out]		v	乗算されるベクトル。
 		*/
-		void Mul(CVector3& vOut)
+		void Mul(CVector3& vOut) const
 		{
 			CVector3 vTmp = vOut;
 			vOut.x = vTmp.x * m[0][0] + vTmp.y * m[1][0] + vTmp.z * m[2][0] + m[3][0];
 			vOut.y = vTmp.x * m[0][1] + vTmp.y * m[1][1] + vTmp.z * m[2][1] + m[3][1];
 			vOut.z = vTmp.x * m[0][2] + vTmp.y * m[1][2] + vTmp.z * m[2][2] + m[3][2];
 		}
-		void Mul(CVector4& vOut)
+		void Mul(CVector4& vOut) const
 		{
 			CVector4 vTmp = vOut;
 			vOut.x = vTmp.x * m[0][0] + vTmp.y * m[1][0] + vTmp.z * m[2][0] + vTmp.w * m[3][0];

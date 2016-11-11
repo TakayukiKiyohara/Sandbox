@@ -9,14 +9,17 @@ namespace tkEngine {
 	/*!
 	 * @brief	テクスチャをロード。
 	 */
-	void CTexture::Load(const char* fileName)
+	bool CTexture::Load(const char* fileName)
 	{
 		LPDIRECT3DDEVICE9 device = Engine().GetD3DDevice();
 		if ( FAILED( D3DXCreateTextureFromFile(
 			device,
 			fileName,
 			&m_tex))) {
-			TK_ASSERT(false, "failed loadtexture");
+			TK_LOG("FailedTextureLoad");
+			return false;
 		}
+		ComputeTexSize();
+		return true;
 	}
 }

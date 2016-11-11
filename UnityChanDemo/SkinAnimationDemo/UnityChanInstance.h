@@ -18,7 +18,7 @@ public:
 	void Update() override;
 	void Render(CRenderContext& renderContext) override;
 private:
-	CSkinModelData			skinModelData;
+	CSkinModelDataHandle	skinModelData;
 	CSkinModel				skinModel;			//スキンモデル。
 	CAnimation				animation;			//アニメーション。
 	CLight					light;				//ライト。

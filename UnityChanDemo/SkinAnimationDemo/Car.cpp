@@ -4,18 +4,23 @@
 
 #include "stdafx.h"
 #include "Car.h"
+#include "Player/Player.h"
+#include "tkEngine/graphics/tkSkinModelMaterial.h"
 
 Car* g_car;
 
 Car::Car()
 {
 	skinModelData.LoadModelData("Assets/modelData/car.X", NULL);
+	CSkinModelMaterial* mat = skinModelData.FindMaterial("Scout_Diffuse.png");
 	normalMap.Load("Assets/modelData/Scout_Normal.png");
 	speculerMap.Load("Assets/modelData/Scout_MetallicSmoothness.png");
+	mat->SetTexture("g_normalTexture", &normalMap);
+	mat->SetTexture("g_speculerMap", &speculerMap);
 	skinModel.Init(&skinModelData);
 	skinModel.SetLight(&light);
-	skinModel.SetNormalMap(&normalMap);
-	skinModel.SetSpeculerMap(&speculerMap);
+	skinModel.SetHasNormalMap(true);
+	skinModel.SetHasSpeculerMap(true);
 	skinModel.SetShadowCasterFlag(true);
 	skinModel.SetShadowReceiverFlag(true);
 	skinModel.SetReflectionCasterFlag(true);
@@ -25,12 +30,12 @@ Car::Car()
 	light.SetDiffuseLightDirection(2, CVector3(0.0f, 0.707f, -0.707f));
 	light.SetDiffuseLightDirection(3, CVector3(0.0f, -0.707f, -0.707f));
 
-	light.SetDiffuseLightColor(0, CVector4(0.2f, 0.2f, 0.2f, 50.0f));
-	light.SetDiffuseLightColor(1, CVector4(0.2f, 0.2f, 0.2f, 50.0f));
-	light.SetDiffuseLightColor(2, CVector4(0.2f, 0.2f, 0.2f, 50.0f));
-	light.SetDiffuseLightColor(3, CVector4(0.2f, 0.2f, 0.2f, 50.0f));
-	light.SetAmbinetLight(CVector3(0.4f, 0.4f, 0.4f));
-	position.Set(2.0f, 1.5f, 0.0f);
+	light.SetDiffuseLightColor(0, CVector4(0.3f, 0.3f, 0.3f, 10.0f));
+	light.SetDiffuseLightColor(1, CVector4(0.3f, 0.3f, 0.3f, 10.0f));
+	light.SetDiffuseLightColor(2, CVector4(0.3f, 0.3f, 0.3f, 10.0f));
+	light.SetDiffuseLightColor(3, CVector4(0.3f, 0.3f, 0.3f, 10.0f));
+	light.SetAmbinetLight(CVector3(0.1f, 0.1f, 0.1f));
+	position.Set(-12.0f, 3.5f, 0.0f);
 	moveSpeed = CVector3::Zero;
 	accele = CVector3::Zero;
 	rotation = CQuaternion::Identity;
@@ -97,6 +102,8 @@ void Car::Update()
 	addPos.Scale(1.0f / 60.0f);
 	position.Add(addPos);
 	skinModel.Update(position, rotation, CVector3::One);
+	light.SetPointLightPosition(g_player->GetPointLightPosition());
+	light.SetPointLightColor(g_player->GetPointLightColor());
 }
 void Car::Render(CRenderContext& renderContext)
 {

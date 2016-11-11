@@ -7,7 +7,6 @@
 #include "tkEngine/graphics/tkAnimation.h"
 #include "tkEngine/graphics/tkSkinModelData.h"
 #include "tkEngine/graphics/prerender/tkShadowCaster.h"
-#include "tkEngine/graphics/tkMaterial.h"
 
 namespace tkEngine {
 	class CEffect;
@@ -69,20 +68,25 @@ namespace tkEngine {
 			m_light = light;
 		}
 		/*!
-		*@brief	法線マップを設定。
-		*@param[in] normalMap	法線マップ。
+		*@brief	速度マップへの書き込みフラグを設定。
 		*/
-		void SetNormalMap(CTexture* normalMap)
+		void SetWriteVelocityMap(bool flag)
 		{
-			m_normalMap = normalMap;
+			m_isWriteVelocityMap = flag;
 		}
 		/*!
-		*@brief	スペキュラマップを設定。
-		*@param[in] specMap		スペキュラマップ。
+		*@brief	法線マップの保持フラグを設定。
 		*/
-		void SetSpeculerMap(CTexture* specMap)
+		void SetHasNormalMap(bool hasNormalMap)
 		{
-			m_speculerMap = specMap;
+			m_hasNormalMap = hasNormalMap;
+		}
+		/*!
+		*@brief	スペキュラマップの保持フラグを設定。
+		*/
+		void SetHasSpeculerMap(bool hasSpecMap)
+		{
+			m_hasSpecMap = hasSpecMap;
 		}
 		/*!
 		 * @brief	シャドウキャスターのフラグを設定。
@@ -144,6 +148,7 @@ namespace tkEngine {
 		{
 			return m_skinModelData->GetOrgMeshFirst();
 		}
+		
 		/*!
 		* @brief	骨のワールド行列を検索
 		*@details
@@ -170,7 +175,6 @@ namespace tkEngine {
 			D3DXMATRIX* viewMatrix,
 			D3DXMATRIX* projMatrix,
 			CLight* light,
-			CTexture* normalMap,
 			bool isInstancingDraw,
 			bool isDrawToShadowMap
 		);
@@ -196,24 +200,29 @@ namespace tkEngine {
 		void DrawToShadowMap(CRenderContext& renderContext, const CMatrix& viewMatrix, const CMatrix& projMatrix);
 	private:
 		enum EnShaderHandle {
-			enShaderHandleViewProj,			//ビュープロジェクション。
-			enShaderHandleLight,			//ライト。
-			enShaderHandleLVP,				//ライトビュープロジェクション行列。
-			enShaderHandleCameraPos,		//カメラの位置。
-			enShaderHandleFlags,			//g_flags
-			enShaderHandleFarNear,			//FarNear
-			enShaderHandleFogParam,			//Fogパラメータ。
-			enShaderHandleWorldMatrixArray,	//ボーン行列
-			enShaderHandleNumBone,			//ボーンの数。
-			enShaderHandleCurNumBones,		//スキングを行なうボーンの数。
-			enShaderHandleViewMatrixRotInv,	//ビュー行列の回転成分の逆行列。
-			enShaderHandleWorldMatrix,		//ワールド行列
-			enShaderHandleRotationMatrix,	//回転行列。
-			enShaderHandleShadowMap,		//シャドウマップ
+			enShaderHandleLastFrameViewProj,	//1フレーム前のビュープロジェクション。	
+			enShaderHandleViewProj,				//ビュープロジェクション。	
+			enShaderHandleLight,				//ライト。
+			enShaderHandleLVP,					//ライトビュープロジェクション行列。
+			enShaderHandleCameraPos,			//カメラの位置。
+			enShaderHandleFlags,				//g_flags
+			enShaderHandleFlags2,				//g_flags2
+			enShaderHandleFarNear,				//FarNear
+			enShaderHandleFogParam,				//Fogパラメータ。
+			enShaderHandleWorldMatrixArray,		//ボーン行列
+			enShaderHandleNumBone,				//ボーンの数。
+			enShaderHandleCurNumBones,			//スキングを行なうボーンの数。
+			enShaderHandleViewMatrixRotInv,		//ビュー行列の回転成分の逆行列。
+			enShaderHandleWorldMatrix,			//ワールド行列
+			enShaderHandleRotationMatrix,		//回転行列。
+			enShaderHandleShadowMap_0,			//シャドウマップ
+			enShaderHandleShadowMap_1,			//シャドウマップ
+			enShaderHandleShadowMap_2,		//シャドウマップ
 			enShaderHandleNormalTexture,	//法線マップ。
 			enShaderHandleSpeculerMap,		//スペキュラマップ。
 			enShaderHandleDiffuseTexture,	//ディフューズテクスチャ。
 			enShaderHandleCameraDir,		//カメラの方向。
+			enShaderHandleShadowRecieverParam,	//シャドウレシーバー用のパラメータ。
 			enShaderHandleTec_SkinModelInstancingRenderToShadowMap,		//SkinModelInstancingRenderToShadowMapテクニック
 			enShaderHandleTec_SkinModelInstancing,						//SkinModelInstancingテクニック。
 			enShaderHandleTec_NoSkinModelInstancingRenderToShadowMap,	//NoSkinModelInstancingRenderToShadowMapテクニック。
@@ -230,9 +239,6 @@ namespace tkEngine {
 		CEffect*						m_pEffect;			//!<エフェクト。
 		CAnimation						m_animation;		//!<アニメーション。
 		CLight*							m_light;			//!<ライト。
-		CTexture*					    m_normalMap;		//!<法線マップ。
-		CTexture*						m_speculerMap;		//!<スペキュラマップ。
-		std::unique_ptr<CMaterial[]>	m_materials;	//!<マテリアルの配列。
 		static const int MAX_MATRIX_PALLET = 128;	//!<マトリクスパレットの最大数。
 		D3DXMATRIX						m_boneMatrixPallet[MAX_MATRIX_PALLET];	//!<マトリクスパレット。
 		bool							m_isShadowReceiver;					//!<シャドウレシーバー。
@@ -243,6 +249,9 @@ namespace tkEngine {
 		float							m_fogParam[2];						//!<フォグのパラメータ
 		CShadowCaster_SkinModel			m_shadowCaster;						//!<シャドウキャスター。
 		D3DXHANDLE						m_hShaderHandle[enShaderHandleNum];	//!<シェーダーハンドル。
+		bool							m_hasNormalMap;						//!<法線マップを保持している？
+		bool							m_hasSpecMap;						//!<スペきゅらマップを保持している？
+		bool							m_isWriteVelocityMap = true;		//!<速度マップに書き込む？
 	};
 }
 

@@ -94,6 +94,12 @@ namespace tkEngine{
 			case enRenderCommand_PerfEndEvent:
 				((CRenderCommand_PerfEndEvent*)(cmdBase))->Execute(pD3DDevice);
 				break;
+			case enRenderCommand_SetVertexShaderConstantF:
+				((CRenderCommand_SetVertexShaderConstantF*)(cmdBase))->Execute(pD3DDevice);
+				break;
+			case enRenderCommand_SetPixelShaderConstantF:
+				((CRenderCommand_SetPixelShaderConstantF*)(cmdBase))->Execute(pD3DDevice);
+				break;
 			default:
 				TK_ASSERT(false, "not implement renderCommand");
 				break;

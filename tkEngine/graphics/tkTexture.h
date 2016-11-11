@@ -9,10 +9,9 @@ namespace tkEngine{
 	/*!
 	 * @brief	テクスチャ。
 	 */
-	class CTexture : Noncopyable{
+	class CTexture{
 	public:
-		CTexture() :
-			m_tex(nullptr)
+		CTexture()
 		{
 		}
 		~CTexture()
@@ -22,6 +21,7 @@ namespace tkEngine{
 		void SetTextureDX( LPDIRECT3DTEXTURE9 tex )
 		{
 			m_tex = tex;
+			ComputeTexSize();
 		}
 		LPDIRECT3DTEXTURE9 GetTextureDX() const
 		{
@@ -34,12 +34,33 @@ namespace tkEngine{
 				m_tex = nullptr;
 			}
 		}
+		//テクスチャの幅を取得。
+		int GetWidth() const
+		{
+			return m_texW;
+		}
+		//テクスチャの高さを取得。
+		int GetHeight() const
+		{
+			return m_texH;
+		}
 		/*!
 		 * @brief	テクスチャをロード。
 		 */
-		void Load( const char* fileName );
+		bool Load( const char* fileName );
 	private:
-		LPDIRECT3DTEXTURE9	m_tex;		//!<テクスチャ。
+		//テクスチャサイズを計算。
+		void ComputeTexSize()
+		{
+			D3DSURFACE_DESC desc;
+			m_tex->GetLevelDesc(0, &desc);
+			m_texW = desc.Width;
+			m_texH = desc.Height;
+		}
+	private:
+		LPDIRECT3DTEXTURE9	m_tex = nullptr;	//!<テクスチャ。
+		int m_texW = 0;							//!<テクスチャの横幅。
+		int m_texH = 0;							//!<テクスチャの縦幅。
 	};
 }
 

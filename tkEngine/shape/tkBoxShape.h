@@ -5,7 +5,6 @@
 #ifndef _CBOXSHAPE_H_
 #define _CBOXSHAPE_H_
 
-#include "tkEngine/graphics/tkMaterial.h"
 #include "tkEngine/shape/tkShapeVertex.h"
 #include "tkEngine/shape/tkShapeBase.h"
 

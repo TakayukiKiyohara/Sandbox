@@ -4,6 +4,7 @@
 #include "tkEngine/graphics/tkEffect.h"
 #include "tkEngine/graphics/tkLight.h"
 #include "tkEngine/graphics/prerender/tkShadowMap.h"
+#include "tkEngine/graphics/tkSkinModelMaterial.h"
 
 namespace tkEngine{
 	
@@ -56,7 +57,6 @@ namespace tkEngine{
 		D3DXMATRIX* viewMatrix,
 		D3DXMATRIX* projMatrix,
 		CLight* light,
-		CTexture* normalMap,
 		bool isInstancingDraw,
 		bool isDrawToShadowMap
 	)
@@ -115,6 +115,7 @@ namespace tkEngine{
 		{
 			//ビュープロジェクション
 			pEffect->SetMatrix(m_hShaderHandle[enShaderHandleViewProj], &viewProj);
+			pEffect->SetMatrix(m_hShaderHandle[enShaderHandleLastFrameViewProj], (D3DXMATRIX*)&MotionBlur().GetLastFrameViewProjectionMatrix());
 			//ライト
 			pEffect->SetValue(
 				m_hShaderHandle[enShaderHandleLight],
@@ -122,17 +123,20 @@ namespace tkEngine{
 				sizeof(CLight)
 			);
 			int flag[4] = { 0 };
-			if (normalMap != nullptr) {
+			if (m_hasNormalMap) {
 				//法線マップ。
 				flag[0] = true;
-				pEffect->SetTexture(m_hShaderHandle[enShaderHandleNormalTexture], normalMap->GetTextureDX());
 			}
 			if (!isDrawToShadowMap && m_isShadowReceiver) {
 				//シャドウレシーバー。
 				flag[1] = true;
-				pEffect->SetTexture(m_hShaderHandle[enShaderHandleShadowMap] , ShadowMap().GetTexture()->GetTextureDX());
+				pEffect->SetTexture(m_hShaderHandle[enShaderHandleShadowMap_0], ShadowMap().GetTexture(0)->GetTextureDX());
+				pEffect->SetTexture(m_hShaderHandle[enShaderHandleShadowMap_1], ShadowMap().GetTexture(1)->GetTextureDX());
+				pEffect->SetTexture(m_hShaderHandle[enShaderHandleShadowMap_2], ShadowMap().GetTexture(2)->GetTextureDX());
 				const CMatrix& mLVP = ShadowMap().GetLVPMatrix();
 				pEffect->SetValue(m_hShaderHandle[enShaderHandleLVP], &mLVP, sizeof(mLVP));
+				const CShadowMap::ShadowRecieverParam& srp = ShadowMap().GetShadowRecieverParam();
+				pEffect->SetValue(m_hShaderHandle[enShaderHandleShadowRecieverParam], &srp, sizeof(srp));
 			}
 			if (m_isFresnel) {
 				flag[2] = true;
@@ -150,12 +154,18 @@ namespace tkEngine{
 			cameraDir.z = viewMatInv.m[2][2];
 			pEffect->SetVector(m_hShaderHandle[enShaderHandleCameraPos], (D3DXVECTOR4*)&cameraPos);
 			pEffect->SetVector(m_hShaderHandle[enShaderHandleCameraDir], (D3DXVECTOR4*)&cameraDir);
-			if (m_speculerMap != nullptr) {
+			if (m_hasSpecMap) {
 				//スペキュラマップ。
 				flag[3] = true;
-				pEffect->SetTexture(m_hShaderHandle[enShaderHandleSpeculerMap], m_speculerMap->GetTextureDX());
 			}
+
+
 			pEffect->SetValue(m_hShaderHandle[enShaderHandleFlags], flag, sizeof(flag));
+			int flag2[4] = { 0 };
+			if (m_isWriteVelocityMap) {
+				flag2[0] = 1;
+			}
+			pEffect->SetValue(m_hShaderHandle[enShaderHandleFlags2], flag2, sizeof(flag2));
 			if (isDrawToShadowMap || m_isShadowReceiver) {
 				float farNear[] = {
 					ShadowMap().GetFar(),
@@ -195,6 +205,7 @@ namespace tkEngine{
 					if (iMatrixIndex != UINT_MAX)
 					{
 						TK_ASSERT(iPaletteEntry < MAX_MATRIX_PALLET, "ボーン行列パレットの最大数を超えた");
+						TK_ASSERT(pMeshContainer->ppBoneMatrixPtrs[iMatrixIndex] != NULL, "NULL");
 						D3DXMatrixMultiply(
 							&m_boneMatrixPallet[iPaletteEntry],
 							&pMeshContainer->pBoneOffsetMatrices[iMatrixIndex],
@@ -206,8 +217,8 @@ namespace tkEngine{
 					
 				pEffect->SetMatrixArray(m_hShaderHandle[enShaderHandleWorldMatrixArray], m_boneMatrixPallet, pMeshContainer->NumPaletteEntries);
 				pEffect->SetInt(m_hShaderHandle[enShaderHandleNumBone], pMeshContainer->NumInfl);
-				// ディフューズテクスチャ。
-				pEffect->SetTexture(m_hShaderHandle[enShaderHandleDiffuseTexture], pMeshContainer->ppTextures[pBoneComb[iAttrib].AttribId]);
+				// マテリアルパラメータを転送。
+				pMeshContainer->materials[pBoneComb[iAttrib].AttribId].SendMaterialParamToGPUImmidiate(pEffect);
 				
 				// ボーン数。
 				pEffect->SetInt(m_hShaderHandle[enShaderHandleCurNumBones], pMeshContainer->NumInfl - 1);
@@ -251,7 +262,7 @@ namespace tkEngine{
 			pEffect->BeginPass(0);
 
 			for (DWORD i = 0; i < pMeshContainer->NumMaterials; i++) {
-				pEffect->SetTexture(m_hShaderHandle[enShaderHandleDiffuseTexture], pMeshContainer->ppTextures[i]);
+				pMeshContainer->materials[i].SendMaterialParamToGPUImmidiate(pEffect);
 				pEffect->CommitChanges();
 				if (isInstancingDraw) {
 					//インスタンシング描画。
@@ -292,7 +303,6 @@ namespace tkEngine{
 				viewMatrix,
 				projMatrix,
 				m_light,
-				m_normalMap,
 				isInstancingDraw,
 				isDrawToShadowMap
 				);
@@ -335,13 +345,13 @@ namespace tkEngine{
 		m_skinModelData(nullptr),
 		m_worldMatrix(CMatrix::Identity),
 		m_light(nullptr),
-		m_normalMap(nullptr),
 		m_isShadowCaster(false),
 		m_isShadowReceiver(false),
 		m_isFresnel(false),
 		m_isReflectionCaster(false),
-		m_speculerMap(nullptr),
-		m_fogFunc(enFogFuncNone)
+		m_fogFunc(enFogFuncNone),
+		m_hasNormalMap(false),
+		m_hasSpecMap(false)
 	{
 		m_fogParam[0] = 0.0f;
 		m_fogParam[1] = 0.0f;
@@ -381,11 +391,13 @@ namespace tkEngine{
 	void CSkinModel::InitShaderConstHandle()
 	{
 		ID3DXEffect* effectDx = m_pEffect->GetD3DXEffect();
+		m_hShaderHandle[enShaderHandleLastFrameViewProj] = effectDx->GetParameterByName(NULL, "g_mViewProjLastFrame");
 		m_hShaderHandle[enShaderHandleViewProj] 	= effectDx->GetParameterByName(NULL, "g_mViewProj");
 		m_hShaderHandle[enShaderHandleLight] 		= effectDx->GetParameterByName(NULL, "g_light");
 		m_hShaderHandle[enShaderHandleLVP] 			= effectDx->GetParameterByName(NULL, "g_mLVP");
 		m_hShaderHandle[enShaderHandleCameraPos] 	= effectDx->GetParameterByName(NULL, "g_cameraPos");
 		m_hShaderHandle[enShaderHandleFlags] 		= effectDx->GetParameterByName(NULL, "g_flags");
+		m_hShaderHandle[enShaderHandleFlags2]		= effectDx->GetParameterByName(NULL, "g_flags2");
 		m_hShaderHandle[enShaderHandleFarNear] 		= effectDx->GetParameterByName(NULL, "g_farNear");
 		m_hShaderHandle[enShaderHandleFogParam] 	= effectDx->GetParameterByName(NULL, "g_fogParam");
 		m_hShaderHandle[enShaderHandleWorldMatrixArray] 	= effectDx->GetParameterByName(NULL, "g_mWorldMatrixArray");
@@ -394,7 +406,9 @@ namespace tkEngine{
 		m_hShaderHandle[enShaderHandleViewMatrixRotInv] = effectDx->GetParameterByName(NULL, "g_viewMatrixRotInv");
 		m_hShaderHandle[enShaderHandleWorldMatrix] = effectDx->GetParameterByName(NULL, "g_worldMatrix");
 		m_hShaderHandle[enShaderHandleRotationMatrix] = effectDx->GetParameterByName(NULL, "g_rotationMatrix");
-		m_hShaderHandle[enShaderHandleShadowMap] = effectDx->GetParameterByName(NULL, "g_shadowMap");
+		m_hShaderHandle[enShaderHandleShadowMap_0] = effectDx->GetParameterByName(NULL, "g_shadowMap_0");
+		m_hShaderHandle[enShaderHandleShadowMap_1] = effectDx->GetParameterByName(NULL, "g_shadowMap_1");
+		m_hShaderHandle[enShaderHandleShadowMap_2] = effectDx->GetParameterByName(NULL, "g_shadowMap_2");
 		m_hShaderHandle[enShaderHandleNormalTexture] = effectDx->GetParameterByName(NULL, "g_normalTexture");
 		m_hShaderHandle[enShaderHandleSpeculerMap] = effectDx->GetParameterByName(NULL, "g_speculerMap");
 		m_hShaderHandle[enShaderHandleDiffuseTexture] = effectDx->GetParameterByName(NULL, "g_diffuseTexture");
@@ -407,6 +421,7 @@ namespace tkEngine{
 		m_hShaderHandle[enShaderHandleTec_SkinModel] = effectDx->GetTechniqueByName("SkinModel");
 		m_hShaderHandle[enShaderHandleTec_NoSkinModelRenderShadowMap] = effectDx->GetTechniqueByName("NoSkinModelRenderShadowMap");
 		m_hShaderHandle[enShaderHandleTec_NoSkinModel] = effectDx->GetTechniqueByName("NoSkinModel");
+		m_hShaderHandle[enShaderHandleShadowRecieverParam] = effectDx->GetParameterByName(NULL, "gShadowReceiverParam");
 	}
 	/*!
 	*@brief	シャドウマップに描画
@@ -416,12 +431,14 @@ namespace tkEngine{
 	void CSkinModel::DrawToShadowMap(CRenderContext& renderContext, const CMatrix& viewMatrix, const CMatrix& projMatrix)
 	{
 		if (m_skinModelData) {
+			CPIXPerfTag tag(renderContext, L"CSkinModel::DrawToShadowMap");
 			renderContext.DrawSkinModelToShadowMap(this, viewMatrix, projMatrix);
 		}
 	}
 	void CSkinModel::Draw(CRenderContext& renderContext, const CMatrix& viewMatrix, const CMatrix& projMatrix)
 	{
 		if (m_skinModelData) {
+			CPIXPerfTag tag(renderContext, L"CSkinModel::Draw");
 			renderContext.DrawSkinModel(this, viewMatrix, projMatrix);
 		}
 	}
